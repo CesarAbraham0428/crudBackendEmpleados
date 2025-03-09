@@ -32,6 +32,7 @@ const EmpleadoSchema = new Schema(
     Sexo: {
       type: String,
       enum: ["M", "F"],
+      required: true
     },
     FotoEmpleado: {
       type: String, // Cambiarlo a Buffer si se almacenan imágenes en base64
@@ -59,6 +60,41 @@ const EmpleadoSchema = new Schema(
       enum: ["empleado", "RH"],
       default: "empleado",
     },
+    Domicilio: {
+      Calle: {
+        type: String,
+        required: true
+      },
+      NumeroExterior: {
+        type: String,
+        required: true
+      },
+      NumeroInterior: {
+        type: String,
+        required: false
+      },
+      Colonia: {
+        type: String,
+        required: true
+      },
+      CodigoPostal: {
+        type: String,
+        required: true
+      },
+      Ciudad: {
+        type: String,
+        required: true
+      }
+    },
+    CursoExterno: [
+      {
+          Nombre: { type: String, required: true },
+          TipoCurso: { type: String, required: true },
+          FechaInicio: { type: Date, required: true },
+          FechaFin: { type: Date, required: true }
+      }
+  ]
+  
   },
   {
     timestamps: true,

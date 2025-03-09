@@ -7,6 +7,7 @@ const registroValidator = [
     body('Nombre').exists().notEmpty().trim().withMessage('Nombre Requerido'),
     body('ApP').exists().notEmpty().trim().withMessage('ApP Requerido'),
     body('ApM').exists().notEmpty().trim().withMessage('ApM Requerido'),
+    body('CorreoElectronico').exists().notEmpty().isEmail().trim().withMessage('Correo requerido'),
     body('Password').exists().notEmpty().trim().withMessage('Password Requerido'),
     body('Rol').exists().notEmpty().trim().withMessage('Rol Requerido'),
 

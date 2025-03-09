@@ -1,11 +1,25 @@
 const jwt = require('jsonwebtoken');
+const JWT_SECRET = process.env.JWT_SECRET;
 
-const firmar = ()=>{
-    jwt.sign()
-}
+const sign = (usuario) => {
+    const token = jwt.sign(
+        {
+            _id: usuario._id,
+            role: usuario.Rol
+        },
+        JWT_SECRET,
+        { expiresIn: '1h' }
+    );
+    return token;
+};
 
-const verificarToken = ()=>{
-    jwt.verify()
-}
+const verify = (token) => {
+    try {
+        const decoded = jwt.verify(token, JWT_SECRET);
+        return decoded;
+    } catch (error) {
+        return null;
+    }
+};
 
-module.exports = {firmar, verificarToken}
+module.exports = { sign, verify };
