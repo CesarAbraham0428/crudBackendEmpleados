@@ -23,6 +23,7 @@ const EmpleadoSchema = new Schema(
     },
     FechaNacimiento: {
       type: Date,
+      required: true
     },
     RFC: {
       type: String,
@@ -35,16 +36,20 @@ const EmpleadoSchema = new Schema(
       required: true
     },
     FotoEmpleado: {
-      type: String, // Cambiarlo a Buffer si se almacenan imágenes en base64
+      type: Buffer, // Cambiarlo a Buffer si se almacenan imágenes en base64
+      required: false
     },
     Departamento: {
       type: String,
+      required: true
     },
     Puesto: {
       type: String,
+      required: true
     },
     Telefono: {
       type: [String], // Un array de strings
+      required: true
     },
     CorreoElectronico: {
       type: [String], // También un array de strings
@@ -57,8 +62,8 @@ const EmpleadoSchema = new Schema(
     Rol: {
       type: String,
       required: true,
-      enum: ["empleado", "RH"],
-      default: "empleado",
+      enum: ["Empleado", "RH"],
+      default: "Empleado",
     },
     Domicilio: {
       Calle: {
@@ -93,6 +98,20 @@ const EmpleadoSchema = new Schema(
           FechaInicio: { type: Date, required: true },
           FechaFin: { type: Date, required: true }
       }
+  ],
+  ActividadEmpresa:[
+    {
+      NombreActividad:{type: String, required: true},
+      Estatus: {type: Number, enum: [0, 1], required: true}
+    }
+  ],
+  ReferenciaFamiliar:[
+    {
+      NombreFamiliar: {type: String, required: true},
+      Parentesco: {type: String, required: true},
+      Telefono: {type: [String], required: true},
+      CorreoElectronico: {type: String, required: true}
+    }
   ]
   
   },

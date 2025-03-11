@@ -1,16 +1,22 @@
-const {body, validationResult} = require('express-validator');
+const { body, validationResult } = require('express-validator');
 const handleHttpError = require('../utils/handleHttpError');
 
 const actualizarEmpleadoValidator = [
-   
-    body('CorreoElectronico').exists().notEmpty().isEmail().trim().withMessage('Correo requerido'),
-    body('Telefono').exists().notEmpty().trim().withMessage('Telefono Requerido'),
-    body('Ciudad').exists().notEmpty().trim().withMessage('Ciudad Requerido'),
-    body('Calle').exists().notEmpty().trim().withMessage('Calle Requerido'),
-    body('Numero Exterior').exists().notEmpty().trim().withMessage('No. Ext Requerido'),
-    body('Numero Interior').exists().notEmpty().trim().withMessage('No. Int Requerido'),
-    body('CodigoPostal').exists().notEmpty().trim().withMessage('CodigoPostal Requerido'),
-    body('Colonia').exists().notEmpty().trim().withMessage('Colonia Requerido'),
+    body('CorreoElectronico').optional().isEmail().withMessage('Correo inválido'),
+
+    body('Telefono').optional().trim(),
+
+    body('Domicilio.Calle').optional().trim(),
+
+    body('Domicilio.NumeroExterior').optional().trim(),
+
+    body('Domicilio.NumeroInterior').optional().trim(),
+
+    body('Domicilio.Colonia').optional().trim(),
+
+    body('Domicilio.CodigoPostal').optional().trim(),
+
+    body('Domicilio.Ciudad').optional().trim(),
 
     (req, res, next) => {
         const errors = validationResult(req);
@@ -21,5 +27,4 @@ const actualizarEmpleadoValidator = [
     }
 ];
 
-
-module.exports = {actualizarEmpleadoValidator}
+module.exports = { actualizarEmpleadoValidator };

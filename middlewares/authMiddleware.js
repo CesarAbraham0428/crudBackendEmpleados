@@ -13,7 +13,7 @@ const autorizar = async (req, res, next) => {
             return res.status(401).json({ message: 'Token inválido o expirado' });
         }
 
-        req.user = dataToken;
+        req.user = dataToken; 
         next();
     } catch (error) {
         res.status(500).json({ message: `Error en la autenticación: ${error.message}` });

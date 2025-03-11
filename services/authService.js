@@ -21,8 +21,7 @@ exports.registrarUsuario = async (userData) => {
 
         return await nuevoUsuario.save();
     } catch (error) {
-        console.log(error);
-        throw new Error(`Error al registrar ${userData.Rol}: ${error.message}`);
+        throw error;
     }
 };
 
@@ -42,6 +41,6 @@ exports.loginUsuario = async (userData) => {
         const token = sign(usuario); // Genera el token
         return { token, usuario: { _id: usuario._id, rol: usuario.Rol } }; // Retorna el token y datos básicos
     } catch (error) {
-        throw new Error(`Error al iniciar sesión: ${error.message}`);
+        throw error;
     }
 };

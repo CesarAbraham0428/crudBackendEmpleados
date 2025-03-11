@@ -2,7 +2,7 @@ const Empleado = require('../models/empleado');
 
 exports.getAllEmpleados = async () => {
     try {
-        const empleados = await Empleado.find({ Rol: { $eq: "empleado" } })
+        const empleados = await Empleado.find({ Rol: { $eq: "Empleado" } })
 
         if (!empleados) {
             throw new Error("No hay empleados registrados");
@@ -11,52 +11,52 @@ exports.getAllEmpleados = async () => {
         return empleados;
 
     } catch (error) {
-        res.status(500).json({ message: `Error: ${erro.message}` });
+        throw error; // En los Servicios solo lanzamos el error para que el controlador lo maneje
     }
 };
 
-exports.getEmpleadoRFC = async (empleadoData) => {
+exports.getEmpleadoPorClave = async (empleadoData) => {
     try {
-        const empleado = await Empleado.find({ RFC: { $eq: empleadoData.RFC } })
+        const empleado = await Empleado.findOne({ ClaveEmpleado: empleadoData.ClaveEmpleado });
 
         if (!empleado) {
-            throw new Error("No hay un empleado registrado con ese RFC");
+            throw new Error("No hay un empleado registrado con esa Clave");
         }
 
         return empleado;
-
     } catch (error) {
-        res.status(500).json({ message: `Error: ${erro.message}` });
+        throw error;
     }
 };
 
-exports.updateEmpleado = async (empleadoData) => {
+exports.updateEmpleado = async (userId, empleadoData) => {
     try {
-        const empleado = await Empleado.find({ RFC: { $eq: empleadoData.RFC } })
+        const empleadoActualizado = await Empleado.findOneAndUpdate(
+            { _id: userId },  // Busca por el ID del usuario del token
+            { $set: empleadoData }, // Solo actualiza los campos que se envíen
+            { new: true, runValidators: true } // Retorna el nuevo documento y valida
+        );
 
-        if (!empleado) {
-            throw new Error("No hay un empleado registrado con ese RFC");
+        if (!empleadoActualizado) {
+            throw new Error("No se pudo actualizar la información del empleado");
         }
 
-        return empleado;
-
+        return empleadoActualizado;
     } catch (error) {
-        res.status(500).json({ message: `Error: ${erro.message}` });
+        throw error;
     }
 };
 
 exports.deleteEmpleado = async (empleadoData) => {
-
     try {
-        const empleado = await Empleado.find({ RFC: { $eq: empleadoData.RFC } })
+        const empleado = await Empleado.findOneAndDelete({ ClaveEmpleado: empleadoData.ClaveEmpleado });
 
         if (!empleado) {
-            throw new Error("No hay un empleado registrado con ese RFC");
+            throw new Error('Empleado no encontrado');
         }
 
         return empleado;
-
     } catch (error) {
-        res.status(500).json({ message: `Error: ${erro.message}` });
+        throw error;
     }
 };

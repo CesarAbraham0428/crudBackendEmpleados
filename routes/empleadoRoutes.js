@@ -6,6 +6,14 @@ const {actualizarEmpleadoValidator} = require('../middlewares/empleadoValidator'
 
 const empleadoController = require('../controllers/empleadoController');
 
-router.patch('/actualizarInfoPersonal', actualizarEmpleadoValidator, empleadoController.actualizarEmpleado);
+const autorizar = require('../middlewares/authMiddleware')
+
+router.get('/obtenerEmpleados', empleadoController.obtenerEmpleados);
+
+router.get('/obtenerEmpleadoClave/:ClaveEmpleado', empleadoController.obtenerEmpleado);
+
+router.patch('/actualizarInfoPersonal', autorizar ,actualizarEmpleadoValidator, empleadoController.actualizarEmpleado);
+
+router.delete('/eliminarEmpleado/:ClaveEmpleado', empleadoController.eliminarEmpleado);
 
 module.exports = router;
