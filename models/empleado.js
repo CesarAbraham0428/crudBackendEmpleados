@@ -116,7 +116,9 @@ const EmpleadoSchema = new Schema(
   
   },
   {
-    timestamps: true,
+    timestamps: {
+      createdAt: "FechaAlta"
+    },
   }
 );
 

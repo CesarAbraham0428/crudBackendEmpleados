@@ -2,18 +2,24 @@ const express = require('express');
 
 const router = express.Router();
 
-const {actualizarEmpleadoValidator} = require('../middlewares/empleadoValidator')
+const {
+    actualizarInfoPersonalEmpleadoValidator,
+    actualizarEmpleadoValidator
+
+} = require('../middlewares/empleadoValidator')
 
 const empleadoController = require('../controllers/empleadoController');
 
 const autorizar = require('../middlewares/authMiddleware')
 
-router.get('/obtenerEmpleados', empleadoController.obtenerEmpleados);
+router.get('/obtenerEmpleados', empleadoController.obtenerTodos);
 
-router.get('/obtenerEmpleadoClave/:ClaveEmpleado', empleadoController.obtenerEmpleado);
+router.get('/obtenerEmpleadoClave/:ClaveEmpleado', empleadoController.obtenerPorClave);
 
-router.patch('/actualizarInfoPersonal', autorizar ,actualizarEmpleadoValidator, empleadoController.actualizarEmpleado);
+router.patch('/actualizarInfoPersonal', autorizar ,actualizarInfoPersonalEmpleadoValidator, empleadoController.actualizarInfoPersonal);
 
-router.delete('/eliminarEmpleado/:ClaveEmpleado', empleadoController.eliminarEmpleado);
+//router.patch('/actualizarEmpleado', actualizarEmpleadoValidator, empleadoController.)
+
+router.delete('/eliminarEmpleado/:ClaveEmpleado', empleadoController.eliminar);
 
 module.exports = router;

@@ -1,8 +1,8 @@
-const Empleado = require('../models/empleado');
+const empleadoRepository = require('../repositories/empleadoRepository');
 
-exports.getAllEmpleados = async () => {
+exports.obtenerTodos = async () => {
     try {
-        const empleados = await Empleado.find({ Rol: { $eq: "Empleado" } })
+        const empleados = await empleadoRepository.obtenerTodos();
 
         if (!empleados) {
             throw new Error("No hay empleados registrados");
@@ -15,9 +15,9 @@ exports.getAllEmpleados = async () => {
     }
 };
 
-exports.getEmpleadoPorClave = async (empleadoData) => {
+exports.obtenerPorClave = async (empleadoData) => {
     try {
-        const empleado = await Empleado.findOne({ ClaveEmpleado: empleadoData.ClaveEmpleado });
+        const empleado = await empleadoRepository.obtenerPorClave(empleadoData);
 
         if (!empleado) {
             throw new Error("No hay un empleado registrado con esa Clave");
@@ -29,12 +29,26 @@ exports.getEmpleadoPorClave = async (empleadoData) => {
     }
 };
 
-exports.updateEmpleado = async (userId, empleadoData) => {
+exports.obtenerInfoPersonal = async (userId) => {
+    try{
+
+        const infoEmpleado = await empleadoRepository.obtenerInfoPersonal(userId);
+
+        return infoEmpleado;
+    }catch(error){
+        throw error;
+    }
+}
+
+exports.actualizarInfoPersonal = async (userId, empleadoData, referenciaId) => {
     try {
+        
+
         const empleadoActualizado = await Empleado.findOneAndUpdate(
-            { _id: userId },  // Busca por el ID del usuario del token
-            { $set: empleadoData }, // Solo actualiza los campos que se envíen
-            { new: true, runValidators: true } // Retorna el nuevo documento y valida
+            { _id: userId },
+            { $set: updateQuery },
+            { new: true, runValidators: true },
+            { arrayFilters: [{ "elem._id": referenciaId }] } // Filtra por _id dentro del array
         );
 
         if (!empleadoActualizado) {
@@ -47,9 +61,30 @@ exports.updateEmpleado = async (userId, empleadoData) => {
     }
 };
 
-exports.deleteEmpleado = async (empleadoData) => {
+
+exports.actualizar = async (claveEmpleado, empleadoData) => {
     try {
-        const empleado = await Empleado.findOneAndDelete({ ClaveEmpleado: empleadoData.ClaveEmpleado });
+
+        const empleadoActualizado = await Empleado.findOneAndUpdate(
+            { ClaveEmpleado: claveEmpleado },
+            { $set: empleadoData },
+            { new: true, runValidators: true }
+        )
+
+        if (!empleadoActualizado) {
+            throw new Error("No se pudo actualizar al empleado");
+        }
+
+        return empleadoActualizado;
+
+    } catch (error) {
+        throw error;
+    }
+};
+
+exports.eliminar = async (empleadoData) => {
+    try {
+        const empleado = await empleadoRepository.eliminarPorClave(empleadoData.ClaveEmpleado);
 
         if (!empleado) {
             throw new Error('Empleado no encontrado');
