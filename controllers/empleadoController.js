@@ -1,10 +1,10 @@
 const empleadoService = require('../services/empleadoService');
-const handleHttpError = require('../utils/handleHttpError')
+const handleHttpError = require('../utils/handleHttpError');
 
 exports.obtenerEmpleados = async (req, res) => {
     try {
         const empleados = await empleadoService.getAllEmpleados();
-        res.status(200).json({ message: `Empleados Obtenidos:`, empleados })
+        res.status(200).json({empleados})
     } catch (error) {
         handleHttpError(res, 'No se encontraron empleados registrados', 404, error)
     }
@@ -15,7 +15,7 @@ exports.obtenerEmpleado = async (req, res) => {
         const ClaveEmpleado = req.params.ClaveEmpleado; // Extrae la clave desde params
         const empleado = await empleadoService.getEmpleadoPorClave({ ClaveEmpleado: ClaveEmpleado });
 
-        res.status(200).json({ message: "Empleado obtenido exitosamente", empleado });
+        res.status(200).json({empleado});
     } catch (error) {
         handleHttpError(res, 'Error al obtener el empleado especifico', 404, error);
     }

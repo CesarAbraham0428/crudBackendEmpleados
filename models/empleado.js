@@ -6,7 +6,7 @@ const EmpleadoSchema = new Schema(
   {
     ClaveEmpleado: {
       type: String,
-      required: true,
+      required: false,
       unique: true,
     },
     Nombre: {
