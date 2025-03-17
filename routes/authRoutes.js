@@ -5,8 +5,10 @@ const { registroValidator, loginValidator} = require('../middlewares/authValidat
 
 const authController = require('../controllers/authController');
 
-router.post('/registrar', registroValidator ,authController.registrarusuario);
+router.post('/registrar', registroValidator ,authController.registrarUsuario);
 
-//router.post('/login', loginValidator, authController)
+router.post('/login', loginValidator, authController.loginUsuario);
+
+router.get('/logout', authController.logoutUsuario);
 
 module.exports = router
