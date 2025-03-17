@@ -16,6 +16,7 @@ router.get('/obtenerEmpleados', empleadoController.obtenerTodos);
 router.get('/obtenerEmpleadoClave/:ClaveEmpleado', empleadoController.obtenerPorClave);
 router.get('/obtenerInfoPersonal', autorizar, empleadoController.obtenerInfoPersonal);
 router.patch('/actualizarEmpleado', autorizar ,actualizarEmpleadoValidator, empleadoController.actualizarEmpleado);
+router.patch('/actualizarPassword', autorizar ,actualizarEmpleadoValidator, empleadoController.actualizarEmpleado);
 router.delete('/eliminarEmpleado/:ClaveEmpleado', empleadoController.eliminar);
 
 // Arrays Correo y Telefono
@@ -27,6 +28,8 @@ router.patch('/actualizarContactos', autorizar, empleadoController.actualizarCon
 router.post('/agregarReferenciaFamiliar', autorizar, empleadoController.agregarReferenciaFamiliar);
 router.patch('/actualizarReferenciaFamiliar/:referenciaId', autorizar, empleadoController.actualizarReferenciaFamiliar);
 router.delete('/eliminarReferenciaFamiliar/:referenciaId', autorizar, empleadoController.eliminarReferenciaFamiliar);
+
+router.patch('/actualizarTelefonosFamiliar/:referenciaId', autorizar, empleadoController.actualizarTelefonosFamiliar);
 
 // Curso Externo
 

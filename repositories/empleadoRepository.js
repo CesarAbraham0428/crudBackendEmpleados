@@ -68,8 +68,7 @@ exports.eliminarCorreo = async (userId, correo) => {
     );
 };
 
-//Referencia familiar
-
+// Referencias Familiares
 exports.agregarReferenciaFamiliar = async (userId, referenciaData) => {
     return await Empleado.findByIdAndUpdate(
         userId,
@@ -79,11 +78,13 @@ exports.agregarReferenciaFamiliar = async (userId, referenciaData) => {
 };
 
 exports.actualizarReferenciaFamiliar = async (userId, referenciaId, referenciaData) => {
+    // Construir los campos a actualizar usando la notación correcta para subdocumentos
     const updateQuery = {};
-
-    // Construir los campos a actualizar
     Object.keys(referenciaData).forEach(key => {
-        updateQuery[`ReferenciaFamiliar.$.${key}`] = referenciaData[key];
+        // Excluir el campo Telefono ya que tiene su propia lógica de actualización
+        if (key !== 'Telefono') {
+            updateQuery[`ReferenciaFamiliar.$.${key}`] = referenciaData[key];
+        }
     });
 
     return await Empleado.findOneAndUpdate(
@@ -101,6 +102,32 @@ exports.eliminarReferenciaFamiliar = async (userId, referenciaId) => {
         userId,
         { $pull: { ReferenciaFamiliar: { _id: referenciaId } } },
         { new: true }
+    );
+};
+
+// Manejo de teléfonos para referencias familiares
+
+exports.agregarTelefonoReferenciaFamiliar = async (userId, referenciaId, telefonos) => {
+    // Utilizar $addToSet con $each para agregar múltiples teléfonos sin duplicados
+    return await Empleado.findOneAndUpdate(
+        { 
+            _id: userId,
+            'ReferenciaFamiliar._id': referenciaId 
+        },
+        { $addToSet: { 'ReferenciaFamiliar.$.Telefono': { $each: telefonos } } },
+        { new: true, runValidators: true }
+    );
+};
+
+exports.eliminarTelefonoReferenciaFamiliar = async (userId, referenciaId, telefonos) => {
+    // Utilizamos $pullAll para eliminar múltiples teléfonos de una vez
+    return await Empleado.findOneAndUpdate(
+        { 
+            _id: userId,
+            'ReferenciaFamiliar._id': referenciaId 
+        },
+        { $pullAll: { 'ReferenciaFamiliar.$.Telefono': telefonos } },
+        { new: true, runValidators: true }
     );
 };
 

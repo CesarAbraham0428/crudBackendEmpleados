@@ -1,37 +1,47 @@
-const {body, validationResult} = require('express-validator');
+const { body, validationResult } = require('express-validator');
 const handleHttpError = require('../utils/handleHttpError');
 
 const registroValidator = [
-    body('ClaveEmpleado').exists().notEmpty().trim().withMessage('Clave Requerida'),
-    body('RFC').exists().notEmpty().trim().withMessage('Rol Requerido'),
-    body('Nombre').exists().notEmpty().trim().withMessage('Nombre Requerido'),
-    body('ApP').exists().notEmpty().trim().withMessage('ApP Requerido'),
-    body('ApM').exists().notEmpty().trim().withMessage('ApM Requerido'),
-    body('FechaNacimiento').exists().notEmpty().trim().withMessage('FechaNacimiento Requerido'),
-    body('CorreoElectronico').exists().notEmpty().isEmail().trim().withMessage('Correo Requerido'),
-    body('Password').exists().notEmpty().trim().withMessage('Password Requerido'),
-    body('Rol').exists().notEmpty().trim().withMessage('Rol Requerido'),
-    body('Sexo').exists().notEmpty().trim().withMessage('Sexo Requerido'),
-    body('Departamento').exists().notEmpty().trim().withMessage('Departamento Requerido'),
-    body('Puesto').exists().notEmpty().trim().withMessage('Puesto Requerido'),
-    body('Telefono').exists().notEmpty().trim().withMessage('Telefono Requerido'),
-    body('Domicilio.Calle').exists().notEmpty().trim().withMessage('Calle Requerido'),
-    body('Domicilio.NumeroExterior').exists().notEmpty().trim().withMessage('NumeroExterior Requerido'),
-    body('Domicilio.NumeroInterior').optional({ nullable: true }),
-    body('Domicilio.Colonia').exists().notEmpty().trim().withMessage('Colonia Requerido'),
-    body('Domicilio.CodigoPostal').exists().notEmpty().trim().withMessage('CodigoPostal Requerido'),
-    body('Domicilio.Ciudad').exists().notEmpty().trim().withMessage('Ciudad Requerido'),
-    body('CursoExterno.Nombre').exists().notEmpty().trim().withMessage('Nombre Requerido'),
-    body('CursoExterno.TipoCurso').exists().notEmpty().trim().withMessage('TipoCurso Requerido'),
-    body('CursoExterno.FechaInicio').exists().notEmpty().trim().withMessage('FechaInicio Requerido'),
-    body('CursoExterno.FechaFin').exists().notEmpty().trim().withMessage('FechaFin Requerido'),
-    body('ActividadEmpresa.NombreActividad').exists().notEmpty().trim().withMessage('NombreActividad Requerido'),
-    body('ActividadEmpresa.Estatus').exists().notEmpty().trim().withMessage('Estatus Requerido'),
-    body('ReferenciaFamiliar.NombreFamiliar').exists().notEmpty().trim().withMessage('NombreFamiliar Requerido'),
-    body('ReferenciaFamiliar.Parentesco').exists().notEmpty().trim().withMessage('Parentesco Requerido'),
-    body('ReferenciaFamiliar.Telefono').exists().notEmpty().trim().withMessage('Telefono Requerido'),
-    body('ReferenciaFamiliar.CorreoElectronico').exists().notEmpty().trim().withMessage('CorreoElectronico Requerido'),
-    
+    body("RFC").exists().notEmpty().trim().withMessage("RFC requerido"),
+    body("Nombre").exists().notEmpty().trim().withMessage("Nombre requerido"),
+    body("ApP").exists().notEmpty().trim().withMessage("Apellido paterno requerido"),
+    body("ApM").optional(),
+    body("FechaNacimiento").exists().notEmpty().withMessage("Fecha de nacimiento requerida"),
+
+    // Validación para que sea un array con elementos tipo string (teléfonos)
+    body("Telefono")
+        .isArray({ min: 1 }).withMessage("Debe proporcionar al menos un teléfono")
+        .custom((telefonos) => {
+            if (!telefonos.every(tel => typeof tel === "string" && tel.trim() !== "")) {
+                throw new Error("Todos los teléfonos deben ser strings válidos");
+            }
+            return true;
+        }),
+
+    // Validación para que sea un array con emails válidos
+    body("CorreoElectronico")
+        .isArray({ min: 1 }).withMessage("Debe proporcionar al menos un correo electrónico")
+        .custom((correos) => {
+            if (!correos.every(correo => typeof correo === "string" && correo.trim() !== "" && /\S+@\S+\.\S+/.test(correo))) {
+                throw new Error("Todos los correos electrónicos deben ser válidos");
+            }
+            return true;
+        }),
+
+    body("Password").exists().notEmpty().trim().withMessage("Contraseña requerida"),
+    body("Rol").exists().notEmpty().isIn(["Empleado", "RH"]).withMessage("Rol requerido y debe ser 'Empleado' o 'RH'"),
+    body("Sexo").exists().notEmpty().isIn(["M", "F"]).withMessage("Sexo requerido y debe ser 'M' o 'F'"),
+    body("Departamento").exists().notEmpty().trim().withMessage("Departamento requerido"),
+    body("Puesto").exists().notEmpty().trim().withMessage("Puesto requerido"),
+
+    // Validaciones para el domicilio
+    body("Domicilio.Calle").exists().notEmpty().trim().withMessage("Calle requerida"),
+    body("Domicilio.NumeroExterior").exists().notEmpty().trim().withMessage("Número exterior requerido"),
+    body("Domicilio.NumeroInterior").optional(),
+    body("Domicilio.Colonia").exists().notEmpty().trim().withMessage("Colonia requerida"),
+    body("Domicilio.CodigoPostal").exists().notEmpty().withMessage("Código postal requerido y debe ser válido"),
+    body("Domicilio.Ciudad").exists().notEmpty().trim().withMessage("Ciudad requerida"),
+
     (req, res, next) => {
         const errors = validationResult(req);
         if (!errors.isEmpty()) {
@@ -53,4 +63,4 @@ const loginValidator = [
     }
 ];
 
-module.exports = {registroValidator, loginValidator}
+module.exports = { registroValidator, loginValidator }

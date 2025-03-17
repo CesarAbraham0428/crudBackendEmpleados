@@ -119,7 +119,7 @@ exports.actualizarReferenciaFamiliar = async (req, res) => {
 
         const referenciaActualizada = await referenciaFamiliarService.actualizar(userId, referenciaId, referenciaData);
 
-        res.status(200).json({ message: `Referencia Actualizada`, referenciaActualizada });
+        res.status(200).json({ message: `Referencia Familiar Actualizada`, referenciaActualizada });
     } catch (error) {
         handleHttpError(res, 'Error al actualizar Referencia Familiar', 500, error);
     }
@@ -134,6 +134,31 @@ exports.eliminarReferenciaFamiliar = async (req, res) => {
         res.status(200).json(resultado);
     } catch (error) {
         handleHttpError(res, 'Error al eliminar Referencia Familiar', 500, error);
+    }
+};
+
+// Manejo de Telefonos de Referencia Familiar
+
+exports.actualizarTelefonosFamiliar = async (req, res) => {
+    try {
+        const userId = req.user._id;
+        const referenciaId = req.params.referenciaId;
+        const { operacion, telefonos } = req.body;
+
+        if (!operacion || !telefonos) {
+            return res.status(400).json({ error: "Operación y teléfonos son requeridos" });
+        }
+
+        const referenciaActualizada = await referenciaFamiliarService.manejarTelefonosFamiliar(
+            userId, referenciaId, operacion, telefonos
+        );
+
+        res.status(200).json({ 
+            message: `Teléfonos de referencia familiar ${operacion === 'agregar' ? 'agregados' : 'eliminados'} correctamente`, 
+            referenciaActualizada 
+        });
+    } catch (error) {
+        handleHttpError(res, `Error al ${req.body.operacion} teléfonos a referencia familiar`, 500, error);
     }
 };
 
