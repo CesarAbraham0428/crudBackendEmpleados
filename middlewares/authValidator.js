@@ -17,7 +17,7 @@ const registroValidator = [
     body('Telefono').exists().notEmpty().trim().withMessage('Telefono Requerido'),
     body('Domicilio.Calle').exists().notEmpty().trim().withMessage('Calle Requerido'),
     body('Domicilio.NumeroExterior').exists().notEmpty().trim().withMessage('NumeroExterior Requerido'),
-    body('Domicilio.NumeroInterior').exists().optional({ nullable: true }).trim().withMessage('NumeroInterior Requerido'),
+    body('Domicilio.NumeroInterior').optional({ nullable: true }),
     body('Domicilio.Colonia').exists().notEmpty().trim().withMessage('Colonia Requerido'),
     body('Domicilio.CodigoPostal').exists().notEmpty().trim().withMessage('CodigoPostal Requerido'),
     body('Domicilio.Ciudad').exists().notEmpty().trim().withMessage('Ciudad Requerido'),
