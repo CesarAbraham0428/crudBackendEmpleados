@@ -12,7 +12,7 @@ const EmpleadoSchema = new Schema(
     FechaNacimiento: { type: Date, required: true },
     RFC: { type: String, required: true, unique: true },
     Sexo: { type: String, enum: ["M", "F"], required: true },
-    FotoEmpleado: { type: Buffer, required: false },
+    FotoEmpleado: { type: Buffer, required: false, default: null},
     Departamento: { type: String, required: true },
     Puesto: { type: String, required: true },
     Telefono: { type: [String], required: true },
@@ -67,7 +67,8 @@ const EmpleadoSchema = new Schema(
   },
   {
     timestamps: {
-      createdAt: "FechaAlta"
+      createdAt: "FechaAlta",
+      updatedAt: false
     }
   }
 );

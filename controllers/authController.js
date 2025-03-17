@@ -29,6 +29,25 @@ exports.loginUsuario = async (req, res) => {
     }
 };
 
+exports.cambiarPassword = async (req, res) => {
+    try {
+        const userId = req.user._id; // Se obtiene del JWT
+        const { Password, NuevaPassword } = req.body;
+
+        // Validar que se envíen los datos necesarios
+        if (!Password || !NuevaPassword) {
+            return res.status(400).json({ message: "Faltan datos requeridos" });
+        }
+
+        // Llamar al servicio para cambiar la contraseña
+        await authService.cambiarPassword(userId, Password, NuevaPassword);
+
+        res.status(200).json({ message: "Contraseña actualizada con éxito" });
+    } catch (error) {
+        handleHttpError(res, "Error al cambiar la contraseña", 500, error);
+    }
+};
+
 exports.logoutUsuario = (req, res) => {
     res.clearCookie('jwt'); // Elimina la cookie llamada 'jwt'
     res.status(200).json({ message: 'Sesión cerrada exitosamente' });

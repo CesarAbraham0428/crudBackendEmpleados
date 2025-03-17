@@ -70,6 +70,17 @@ exports.eliminar = async (empleadoData) => {
     }
 };
 
+// Foto Empleado
+
+exports.agregarFotoEmpleado = async (userId, foto) => {
+  if (!foto) throw new Error("No se recibió ninguna imagen.");
+  return await empleadoRepository.actualizarFotoEmpleado(userId, foto.buffer);
+};
+
+exports.eliminarFotoEmpleado = async (userId) => {
+  return await empleadoRepository.eliminarFotoEmpleado(userId);
+};
+
 // Operaciones con Arrays
 
 exports.manejarCorreos = async (userId, operacion, datos) => {

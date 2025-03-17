@@ -13,6 +13,14 @@ exports.obtenerPorId = async (userId) => {
     return await Empleado.findById(userId);
 };
 
+exports.obtenerPorRFC = async (userData) => {
+    return Empleado.findOne({ RFC: { $eq: userData } });
+};
+
+exports.obtenerPorEmail = async (userData) => {
+    return await Empleado.findOne({ CorreoElectronico: { $eq: userData } });
+};
+
 exports.obtenerInfoPersonal = async(userId)=>{
     return await Empleado.find(
         {_id:{$eq: userId}},
@@ -30,6 +38,26 @@ exports.actualizarEmpleadoCompleto = async (userId, updateOperations) => {
 exports.eliminarPorClave = async (empleadoData) => {
     return await Empleado.findOneAndDelete({ ClaveEmpleado: empleadoData.ClaveEmpleado });
 };
+
+// Foto del empleado
+
+exports.actualizarFotoEmpleado = async (userId, fotoBuffer) => {
+    return await Empleado.findByIdAndUpdate(
+      userId,
+      { FotoEmpleado: fotoBuffer },
+      { new: true, runValidators: true }
+    );
+  };
+  
+  // Eliminar foto de perfil
+  exports.eliminarFotoEmpleado = async (userId) => {
+    const defaultPhoto = null; // Puedes definir una foto por defecto en Buffer si lo deseas
+    return await Empleado.findByIdAndUpdate(
+      userId,
+      { FotoEmpleado: defaultPhoto },
+      { new: true }
+    );
+  };
 
 // Telefono
 
@@ -69,6 +97,7 @@ exports.eliminarCorreo = async (userId, correo) => {
 };
 
 // Referencias Familiares
+
 exports.agregarReferenciaFamiliar = async (userId, referenciaData) => {
     return await Empleado.findByIdAndUpdate(
         userId,

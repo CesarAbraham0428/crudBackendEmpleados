@@ -2,6 +2,8 @@ const express = require('express');
 
 const router = express.Router();
 
+const upload = require("../middlewares/uploadMiddleware");
+
 const {
     actualizarInfoPersonalEmpleadoValidator,
     actualizarEmpleadoValidator
@@ -16,8 +18,11 @@ router.get('/obtenerEmpleados', empleadoController.obtenerTodos);
 router.get('/obtenerEmpleadoClave/:ClaveEmpleado', empleadoController.obtenerPorClave);
 router.get('/obtenerInfoPersonal', autorizar, empleadoController.obtenerInfoPersonal);
 router.patch('/actualizarEmpleado', autorizar ,actualizarEmpleadoValidator, empleadoController.actualizarEmpleado);
-router.patch('/actualizarPassword', autorizar ,actualizarEmpleadoValidator, empleadoController.actualizarEmpleado);
 router.delete('/eliminarEmpleado/:ClaveEmpleado', empleadoController.eliminar);
+
+// Rutas para la foto del empleado
+router.post("/agregarFoto", autorizar, upload.single("foto"), empleadoController.agregarFotoEmpleado);
+router.delete("/eliminarFoto", autorizar, empleadoController.eliminarFotoEmpleado);
 
 // Arrays Correo y Telefono
 

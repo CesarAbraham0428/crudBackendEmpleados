@@ -64,6 +64,29 @@ exports.eliminar = async (req, res) => {
     }
 };
 
+// Foto Empleado
+
+exports.agregarFotoEmpleado = async (req, res) => {
+    try {
+        const userId = req.user._id;
+        const foto = req.file;
+        const empleado = await empleadoService.agregarFotoEmpleado(userId, foto);
+        res.json({ message: "Foto subida correctamente.", empleado });
+    } catch (error) {
+        handleHttpError(res, 'Error al agregar la foto del empleado', 500, error);
+    }
+};
+
+exports.eliminarFotoEmpleado = async (req, res) => {
+    try {
+        const userId = req.user._id;
+        const empleado = await empleadoService.eliminarFotoEmpleado(userId);
+        res.json({ message: "Foto eliminada correctamente.", empleado });
+    } catch (error) {
+        handleHttpError(res, 'Error al eliminar la foto del empleado', 500, error);
+    }
+};
+
 // Correos y Telefonos del Empleado
 
 exports.actualizarContactos = async (req, res) => {
@@ -153,9 +176,9 @@ exports.actualizarTelefonosFamiliar = async (req, res) => {
             userId, referenciaId, operacion, telefonos
         );
 
-        res.status(200).json({ 
-            message: `Teléfonos de referencia familiar ${operacion === 'agregar' ? 'agregados' : 'eliminados'} correctamente`, 
-            referenciaActualizada 
+        res.status(200).json({
+            message: `Teléfonos de referencia familiar ${operacion === 'agregar' ? 'agregados' : 'eliminados'} correctamente`,
+            referenciaActualizada
         });
     } catch (error) {
         handleHttpError(res, `Error al ${req.body.operacion} teléfonos a referencia familiar`, 500, error);
