@@ -20,13 +20,7 @@ router.delete('/eliminarEmpleado/:ClaveEmpleado', empleadoController.eliminar);
 
 // Arrays Correo y Telefono
 
-router.post('/agregarCorreo', autorizar, empleadoController.agregarCorreo);
-router.put('/actualizarCorreo', autorizar, empleadoController.actualizarCorreo);
-router.delete('/eliminarCorreo/:correo', autorizar, empleadoController.eliminarCorreo);
-
-router.post('/agregarTelefono', autorizar, empleadoController.agregarTelefono);
-router.put('/actualizarTelefono', autorizar, empleadoController.actualizarTelefono);
-router.delete('/eliminartelefono/:telefono', autorizar, empleadoController.eliminarTelefono);
+router.patch('/actualizarContactos', autorizar, empleadoController.actualizarContactos);
 
 // Referencia Familiar
 

@@ -64,84 +64,34 @@ exports.eliminar = async (req, res) => {
 
 // Correos y Telefonos del Empleado
 
-exports.agregarCorreo = async (req, res) => {
+exports.actualizarContactos = async (req, res) => {
     try {
         const userId = req.user._id;
-        const { correo } = req.body;
-        
-        const resultado = await empleadoService.agregarCorreo(userId, correo);
-        res.status(200).json({ mensaje: "Correo agregado correctamente", empleado: resultado });
-    } catch (error) {
-        handleHttpError(res, 'Error al agregar correo', 500, error);
-    }
-};
+        const { operaciones } = req.body;
 
-exports.actualizarCorreo = async (req, res) => {
-    try {
-        const userId = req.user._id;
-        const { correoAntiguo, correoNuevo } = req.body;
-        
-        if (!correoAntiguo || !correoNuevo) {
-            return res.status(400).json({ mensaje: "Se requieren correo antiguo y nuevo" });
+        if (!operaciones || !Array.isArray(operaciones)) {
+            throw new Error("Formato de operaciones no válido");
         }
-        
-        const resultado = await empleadoService.actualizarCorreo(userId, correoAntiguo, correoNuevo);
-        res.status(200).json({ mensaje: "Correo actualizado correctamente", empleado: resultado });
-    } catch (error) {
-        handleHttpError(res, 'Error al actualizar correo', 500, error);
-    }
-};
 
-exports.eliminarCorreo = async (req, res) => {
-    try {
-        const userId = req.user._id;
-        const correo = req.params.correo;
-        
-        const resultado = await empleadoService.eliminarCorreo(userId, correo);
-        res.status(200).json({ mensaje: "Correo eliminado correctamente", empleado: resultado });
-    } catch (error) {
-        handleHttpError(res, 'Error al eliminar correo', 500, error);
-    }
-};
+        const resultados = [];
+        for (const opera of operaciones) {
+            const { tipo, operacion, datos } = opera;
 
-exports.agregarTelefono = async (req, res) => {
-    try {
-        const userId = req.user._id;
-        const { correo } = req.body;
-        
-        const resultado = await empleadoService.agregarCorreo(userId, correo);
-        res.status(200).json({ mensaje: "Correo agregado correctamente", empleado: resultado });
-    } catch (error) {
-        handleHttpError(res, 'Error al agregar correo', 500, error);
-    }
-};
+            let resultado;
+            if (tipo === "correo") {
+                resultado = await empleadoService.manejarCorreos(userId, operacion, datos);
+            } else if (tipo === "telefono") {
+                resultado = await empleadoService.manejarTelefonos(userId, operacion, datos);
+            } else {
+                throw new Error("Tipo de contacto no válido");
+            }
 
-// En el controlador
-exports.actualizarTelefono = async (req, res) => {
-    try {
-        const userId = req.user._id;
-        const { telefonoAntiguo, telefonoNuevo } = req.body;
-        
-        if (!telefonoAntiguo || !telefonoNuevo) {
-            return res.status(400).json({ mensaje: "Se requieren teléfono antiguo y nuevo" });
+            resultados.push(resultado);
         }
-        
-        const resultado = await empleadoService.actualizarTelefono(userId, telefonoAntiguo, telefonoNuevo);
-        res.status(200).json({ mensaje: "Teléfono actualizado correctamente", empleado: resultado });
-    } catch (error) {
-        handleHttpError(res, 'Error al actualizar teléfono', 500, error);
-    }
-};
 
-exports.eliminarTelefono = async (req, res) => {
-    try {
-        const userId = req.user._id;
-        const correo = req.params.correo;
-        
-        const resultado = await empleadoService.eliminarCorreo(userId, correo);
-        res.status(200).json({ mensaje: "Correo eliminado correctamente", empleado: resultado });
+        res.status(200).json({ mensaje: "Operaciones realizadas correctamente", resultados });
     } catch (error) {
-        handleHttpError(res, 'Error al eliminar correo', 500, error);
+        handleHttpError(res, 'Error al realizar las operaciones', 500, error);
     }
 };
 

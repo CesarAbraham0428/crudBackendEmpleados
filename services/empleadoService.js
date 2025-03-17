@@ -42,9 +42,8 @@ exports.obtenerInfoPersonal = async (userId) => {
     }
 };
 
-exports.actualizarEmpleado = async (userId) => {
+exports.actualizarEmpleado = async (userId, body) => {
     try {
-        const body = req.body;
         const empleadoActualizado = await empleadoRepository.actualizarEmpleadoCompleto(userId, body)
 
         if (!empleadoActualizado) {
@@ -73,82 +72,54 @@ exports.eliminar = async (empleadoData) => {
 
 // Operaciones con Arrays
 
-exports.agregarCorreo = async (userId, correo) => {
-    // Validación de formato de correo aquí
-    const updateOperation = { $addToSet: { CorreoElectronico: correo } };
-    return await empleadoRepository.actualizarEmpleadoCompleto(userId, updateOperation);
-};
+exports.manejarCorreos = async (userId, operacion, datos) => {
+    const { correos } = datos;
 
-exports.actualizarCorreo = async (userId, correoAntiguo, correoNuevo) => {
-    try {
-        // Verificamos que el correo antiguo exista
-        const empleado = await empleadoRepository.obtenerPorId(userId);
-        if (!empleado.CorreoElectronico.includes(correoAntiguo)) {
-            throw new Error("El correo que intenta actualizar no existe");
-        }
-        
-        // Verificamos que el correo nuevo no exista ya
-        if (empleado.CorreoElectronico.includes(correoNuevo)) {
-            throw new Error("El nuevo correo ya existe en su lista");
-        }
-        
-        // Realizamos la actualización en una sola operación atómica
-        return await empleadoRepository.actualizarEmpleadoCompleto(
-            userId,
-            { 
-                $pull: { CorreoElectronico: correoAntiguo },
-                $push: { CorreoElectronico: correoNuevo }
-            }
-        );
-    } catch (error) {
-        throw error;
+    if (!correos || !Array.isArray(correos)) {
+        throw new Error("Formato de correos no válido");
+    }
+
+    switch (operacion) {
+        case "agregar":
+            return await empleadoRepository.actualizarEmpleadoCompleto(
+                userId,
+                { $addToSet: { CorreoElectronico: { $each: correos } } }
+            );
+
+        case "eliminar":
+            return await empleadoRepository.actualizarEmpleadoCompleto(
+                userId,
+                { $pull: { CorreoElectronico: { $in: correos } } }
+            );
+
+        default:
+            throw new Error("Operación no válida para correos");
     }
 };
 
-exports.eliminarCorreo = async (userId, correo) => {
-    const updateOperation = { $pull: { CorreoElectronico: correo } };
-    return await empleadoRepository.actualizarEmpleadoCompleto(userId, updateOperation);
-};
+exports.manejarTelefonos = async (userId, operacion, datos) => {
+    const { telefonos } = datos;
 
-exports.actualizarTelefono = async (userId, telefonoAntiguo, telefonoNuevo) => {
-    try {
-        // Convertir a string para asegurar formato consistente
-        telefonoAntiguo = String(telefonoAntiguo);
-        telefonoNuevo = String(telefonoNuevo);
-        
-        // Verificamos que el teléfono antiguo exista
-        const empleado = await empleadoRepository.obtenerPorId(userId);
-        if (!empleado.Telefono.includes(telefonoAntiguo)) {
-            throw new Error("El teléfono que intenta actualizar no existe");
-        }
-        
-        // Verificamos que el teléfono nuevo no exista ya
-        if (empleado.Telefono.includes(telefonoNuevo)) {
-            throw new Error("El nuevo teléfono ya existe en su lista");
-        }
-        
-        // Realizamos la actualización en una sola operación atómica
-        return await empleadoRepository.actualizarEmpleadoCompleto(
-            userId,
-            { 
-                $pull: { Telefono: telefonoAntiguo },
-                $push: { Telefono: telefonoNuevo }
-            }
-        );
-    } catch (error) {
-        throw error;
+    if (!telefonos || !Array.isArray(telefonos)) {
+        throw new Error("Formato de teléfonos no válido");
     }
-};
 
-exports.agregarTelefono = async (userId, correo) => {
-    // Validación de formato de correo aquí
-    const updateOperation = { $addToSet: { CorreoElectronico: correo } };
-    return await empleadoRepository.actualizarEmpleadoCompleto(userId, updateOperation);
-};
+    switch (operacion) {
+        case "agregar":
+            return await empleadoRepository.actualizarEmpleadoCompleto(
+                userId,
+                { $addToSet: { Telefono: { $each: telefonos } } }
+            );
 
-exports.eliminarTelefono = async (userId, correo) => {
-    const updateOperation = { $pull: { CorreoElectronico: correo } };
-    return await empleadoRepository.actualizarEmpleadoCompleto(userId, updateOperation);
+        case "eliminar":
+            return await empleadoRepository.actualizarEmpleadoCompleto(
+                userId,
+                { $pull: { Telefono: { $in: telefonos } } }
+            );
+
+        default:
+            throw new Error("Operación no válida para teléfonos");
+    }
 };
 
 // Operaciones con subdocumentos
