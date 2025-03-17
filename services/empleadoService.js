@@ -121,28 +121,3 @@ exports.manejarTelefonos = async (userId, operacion, datos) => {
             throw new Error("Operación no válida para teléfonos");
     }
 };
-
-// Operaciones con subdocumentos
-exports.agregarReferenciaFamiliar = async (userId, referenciaData) => {
-    try {
-        return await referenciaFamiliarService.agregar(userId, referenciaData);
-    } catch (error) {
-        throw error;
-    }
-};
-
-exports.actualizarReferenciaFamiliar = async (userId, referenciaId, referenciaData) => {
-    try {
-        return await referenciaFamiliarService.actualizar(userId, referenciaId, referenciaData);
-    } catch (error) {
-        throw error;
-    }
-};
-
-exports.eliminarReferenciaFamiliar = async (userId, referenciaId) => {
-    try {
-        return await referenciaFamiliarService.eliminar(userId, referenciaId);
-    } catch (error) {
-        throw error;
-    }
-};

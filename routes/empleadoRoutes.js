@@ -24,15 +24,15 @@ router.patch('/actualizarContactos', autorizar, empleadoController.actualizarCon
 
 // Referencia Familiar
 
-router.post('/agregarReferenciaFamiliar', empleadoController.agregarReferenciaFamiliar);
-router.patch('/actualizarReferenciaFamiliar', empleadoController.actualizarReferenciaFamiliar);
-router.delete('/eliminarReferenciaFamiliar', empleadoController.eliminarReferenciaFamiliar);
+router.post('/agregarReferenciaFamiliar', autorizar, empleadoController.agregarReferenciaFamiliar);
+router.patch('/actualizarReferenciaFamiliar/:referenciaId', autorizar, empleadoController.actualizarReferenciaFamiliar);
+router.delete('/eliminarReferenciaFamiliar/:referenciaId', autorizar, empleadoController.eliminarReferenciaFamiliar);
 
 // Curso Externo
 
-router.post('/agregarCursoExterno', empleadoController.agregarCursoExterno);
-router.patch('/actualizarCursoExterno', empleadoController.actualizarCursoExterno);
-router.delete('/eliminarCursoExterno', empleadoController.eliminarCursoExterno);
+router.post('/agregarCursoExterno', autorizar, empleadoController.agregarCursoExterno);
+router.patch('/actualizarCursoExterno/:cursoExternoId', autorizar, empleadoController.actualizarCursoExterno);
+router.delete('/eliminarCursoExterno/:cursoExternoId', autorizar, empleadoController.eliminarCursoExterno);
 
 // ActividadEmpresa
 

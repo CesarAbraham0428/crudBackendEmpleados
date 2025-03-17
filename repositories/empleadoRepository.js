@@ -79,9 +79,8 @@ exports.agregarReferenciaFamiliar = async (userId, referenciaData) => {
 };
 
 exports.actualizarReferenciaFamiliar = async (userId, referenciaId, referenciaData) => {
-    // Construir la query para actualizar un subdocumento específico
     const updateQuery = {};
-    
+
     // Construir los campos a actualizar
     Object.keys(referenciaData).forEach(key => {
         updateQuery[`ReferenciaFamiliar.$.${key}`] = referenciaData[key];
@@ -111,6 +110,41 @@ exports.obtenerCursosExternos = async(userId)=>{
     return await Empleado.find(
         {_id: {$eq: userId}},
         {_id:0, CursoExterno: 1}
+    );
+};
+
+exports.agregarCursoExterno = async (userId, cursoExternoData) => {
+    return await Empleado.findByIdAndUpdate(
+        userId,
+        { $push: { CursoExterno: cursoExternoData } }, // Agregar al array CursoExterno
+        { new: true, runValidators: true }
+    );
+};
+
+// Actualizar un CursoExterno
+exports.actualizarCursoExterno = async (userId, cursoExternoId, cursoExternoData) => {
+    const updateQuery = {};
+
+    // Construir los campos a actualizar
+    Object.keys(cursoExternoData).forEach(key => {
+        updateQuery[`CursoExterno.$.${key}`] = cursoExternoData[key];
+    });
+
+    return await Empleado.findOneAndUpdate(
+        { 
+            _id: userId,
+            'CursoExterno._id': cursoExternoId 
+        },
+        { $set: updateQuery },
+        { new: true, runValidators: true }
+    );
+};
+
+exports.eliminarCursoExterno = async (userId, cursoExternoId) => {
+    return await Empleado.findByIdAndUpdate(
+        userId,
+        { $pull: { CursoExterno: { _id: cursoExternoId } }}, // Eliminar del array CursoExterno
+        { new: true }
     );
 };
 

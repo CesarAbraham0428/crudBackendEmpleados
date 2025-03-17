@@ -1,5 +1,7 @@
 const empleadoService = require('../services/empleadoService');
 const referenciaFamiliarService = require('../services/referenciaFamiliarService');
+const ActividadEmpresaService = require('../services/actividadEmpresaService');
+const cursoExternoService = require('../services/cursoExternoService');
 
 const handleHttpError = require('../utils/handleHttpError');
 
@@ -99,45 +101,93 @@ exports.actualizarContactos = async (req, res) => {
 
 exports.agregarReferenciaFamiliar = async (req, res) => {
     try {
-        const empleadoData = req.body;
-        const referenciaActualizada = await referenciaFamiliarService.agregar(empleadoData);
+        const userId = req.user._id;
+        const referenciaData = req.body;
+        const referenciaActualizada = await referenciaFamiliarService.agregar(userId, referenciaData);
 
-        res.status(200).json({message: `Referencia Agregada`, referenciaActualizada});
+        res.status(200).json({ message: `Referencia Agregada`, referenciaActualizada });
     } catch (error) {
-        handleHttpError(res, 'Error al agregar Referencia Familiar',500, error);
+        handleHttpError(res, 'Error al agregar Referencia Familiar', 500, error);
     }
 };
 
-exports.actualizarReferenciaFamiliar = async () => {
+exports.actualizarReferenciaFamiliar = async (req, res) => {
     try {
+        const userId = req.user._id;
+        const referenciaId = req.params.referenciaId;
+        const referenciaData = req.body;
 
+        const referenciaActualizada = await referenciaFamiliarService.actualizar(userId, referenciaId, referenciaData);
+
+        res.status(200).json({ message: `Referencia Actualizada`, referenciaActualizada });
     } catch (error) {
-        handleHttpError(res, 'Error al actualizar Referencia Familiar',500, error);
+        handleHttpError(res, 'Error al actualizar Referencia Familiar', 500, error);
     }
 };
 
-exports.eliminarReferenciaFamiliar = async () => {
+exports.eliminarReferenciaFamiliar = async (req, res) => {
+    try {
+        const userId = req.user._id;
+        const referenciaId = req.params.referenciaId;
+        const resultado = await referenciaFamiliarService.eliminar(userId, referenciaId);
 
+        res.status(200).json(resultado);
+    } catch (error) {
+        handleHttpError(res, 'Error al eliminar Referencia Familiar', 500, error);
+    }
 };
 
-// Información de CursosExternos del empleado
+exports.agregarCursoExterno = async (req, res) => {
+    try {
+        const userId = req.user._id; // Obtener el _id del usuario autenticado
+        const cursoExternoData = req.body; // Datos del curso externo
 
-exports.agregarCursoExterno = async () => {
+        const cursoExternoAgregado = await cursoExternoService.agregar(userId, cursoExternoData);
 
+        res.status(200).json({ message: "Curso Externo agregado", cursoExternoAgregado });
+    } catch (error) {
+        handleHttpError(res, 'Error al agregar Curso Externo', 500, error);
+    }
 };
 
-exports.actualizarCursoExterno = async () => {
+exports.actualizarCursoExterno = async (req, res) => {
+    try {
+        const userId = req.user._id; // Obtener el _id del usuario autenticado
+        const cursoExternoId = req.params.cursoExternoId; // Obtener el _id del curso externo
+        const cursoExternoData = req.body; // Datos actualizados del curso externo
 
+        const cursoExternoActualizado = await cursoExternoService.actualizar(userId, cursoExternoId, cursoExternoData);
+
+        res.status(200).json({ message: "Curso Externo actualizado", cursoExternoActualizado });
+    } catch (error) {
+        handleHttpError(res, 'Error al actualizar Curso Externo', 500, error);
+    }
 };
 
-exports.eliminarCursoExterno = async () => {
+exports.eliminarCursoExterno = async (req, res) => {
+    try {
+        const userId = req.user._id; // Obtener el _id del usuario autenticado
+        const cursoExternoId = req.params.cursoExternoId; // Obtener el _id del curso externo
 
+        const resultado = await cursoExternoService.eliminar(userId, cursoExternoId);
+
+        res.status(200).json(resultado);
+    } catch (error) {
+        handleHttpError(res, 'Error al eliminar Curso Externo', 500, error);
+    }
 };
 
 // Información de ActividadesEmpresa del empleado
 
-exports.obtenerActividadesEmpresa = async (req, res)=>{
-    //const actividadesEmpresa = await empleadoService.
+exports.obtenerActividadesEmpresa = async (req, res) => {
+    try {
+        const userId = req.user._id;
+
+        const actividadesEmpresa = await ActividadEmpresaService.obtenerActividadesEmpresaEmpleado(userId);
+        res.status(200).json({ actividadesEmpresa });
+    } catch (error) {
+        handleHttpError(res, "Error al obtener las actividades del empleado", 500, error);
+    }
 };
 
 exports.agregarActividadEmpresa = async () => {

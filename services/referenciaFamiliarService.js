@@ -2,14 +2,12 @@ const empleadoRepository = require('../repositories/empleadoRepository');
 
 exports.agregar = async (userId, referenciaData) => {
     try {
-
         const empleadoActualizado = await empleadoRepository.agregarReferenciaFamiliar(userId, referenciaData);
         
         if (!empleadoActualizado) {
             throw new Error("No se pudo agregar la referencia familiar");
         }
 
-        // Devolver la referencia agregada (la última del array)
         const nuevaReferencia = empleadoActualizado.ReferenciaFamiliar[empleadoActualizado.ReferenciaFamiliar.length - 1];
 
         return nuevaReferencia;
@@ -20,22 +18,12 @@ exports.agregar = async (userId, referenciaData) => {
 
 exports.actualizar = async (userId, referenciaId, referenciaData) => {
     try {
-        // Validar que exista la referencia
-        const referencias = await this.obtenerTodos(userId);
-        const referenciaExiste = referencias[0]?.ReferenciaFamiliar.some(
-            ref => ref._id.toString() === referenciaId
-        );
-        
-        if (!referenciaExiste) {
-            throw new Error("Referencia familiar no encontrada");
+        const empleadoActualizado = await empleadoRepository.actualizarReferenciaFamiliar(userId, referenciaId, referenciaData);
+
+        if (!empleadoActualizado) {
+            throw new Error("No se pudo actualizar la referencia familiar");
         }
 
-        // Actualizar la referencia
-        const empleadoActualizado = await empleadoRepository.actualizarReferenciaFamiliar(
-            userId, referenciaId, referenciaData
-        );
-
-        // Encontrar la referencia actualizada
         const referenciaActualizada = empleadoActualizado.ReferenciaFamiliar.find(
             ref => ref._id.toString() === referenciaId
         );
@@ -48,22 +36,13 @@ exports.actualizar = async (userId, referenciaId, referenciaData) => {
 
 exports.eliminar = async (userId, referenciaId) => {
     try {
-        // Validar que exista la referencia
-        const referencias = await this.obtenerTodos(userId);
-        const referenciaExiste = referencias[0]?.ReferenciaFamiliar.some(
-            ref => ref._id.toString() === referenciaId
-        );
-        
-        if (!referenciaExiste) {
-            throw new Error("Referencia familiar no encontrada");
+        const empleadoActualizado = await empleadoRepository.eliminarReferenciaFamiliar(userId, referenciaId);
+
+        if (!empleadoActualizado) {
+            throw new Error("No se pudo eliminar la referencia familiar");
         }
 
-        // Eliminar la referencia
-        const empleadoActualizado = await empleadoRepository.eliminarReferenciaFamiliar(
-            userId, referenciaId
-        );
-
-        return { success: true, message: "Referencia familiar eliminada con éxito" };
+        return { message: "Referencia familiar eliminada con éxito" };
     } catch (error) {
         throw error;
     }
