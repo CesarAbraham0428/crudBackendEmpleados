@@ -12,7 +12,11 @@ exports.registrarUsuario = async (userData) => {
         } else if (userEmailExist) {
             throw new Error('El correo ya está siendo ocupado por otro usuario');
         }
-        const claveEmpleado = await generarClaveEmpleado(userData.nombre, userData.apellidoPaterno, userData.apellidoMaterno);
+        const claveEmpleado = await generarClaveEmpleado(userData.Nombre, userData.ApP, userData.ApM);
+        // Validación de la clave generada
+        if (!claveEmpleado) {
+            throw new Error('No se pudo generar la clave de empleado');
+        }
         const hashedPassword = await hash(userData.Password);
         const nuevoUsuario = new Empleado({
             ...userData,
@@ -46,20 +50,26 @@ exports.loginUsuario = async (userData) => {
     }
 };
 
-const generarClaveEmpleado = async (nombre, apellidoPaterno, apellidoMaterno) => {
+const generarClaveEmpleado = async (Nombre, ApP, ApM) => {
+     console.log("Datos recibidos en generarClaveEmpleado:", { Nombre, ApP, ApM });
     
-    const nombres = nombre.split(" ");
+    // Validar que los parámetros no sean vacíos
+     if (!Nombre || !ApP || !ApM) {
+        throw new Error('Faltan datos para generar la clave de empleado');
+    }
+
+    const nombres = Nombre.split(" ");
     let iniciales = nombres.map(n => n.charAt(0)).join("").toUpperCase(); 
     
     // Primera letra del apellido paterno y materno
-    const inicialApP = apellidoPaterno.charAt(0).toUpperCase();
-    const inicialApM = apellidoMaterno.charAt(0).toUpperCase();
+    const inicialApP = ApP.charAt(0).toUpperCase();
+    const inicialApM = ApM.charAt(0).toUpperCase();
 
     // Formar el prefijo de la clave
     const prefijoClave = `${iniciales}${inicialApP}${inicialApM}`; 
 
     // Buscar el último usuario con el mismo prefijo en MongoDB
-    const ultimoUsuario = await Usuario.aggregate([
+    const ultimoUsuario = await Empleado.aggregate([
         { 
             $match: { ClaveEmpleado: { $regex: `^${prefijoClave}-\\d{3}$` } } 
         },
