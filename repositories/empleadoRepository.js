@@ -24,7 +24,7 @@ exports.obtenerPorEmail = async (userData) => {
 exports.obtenerInfoPersonal = async(userId)=>{
     return await Empleado.find(
         {_id:{$eq: userId}},
-        {_id: 0, CorreoElectronico:1, Telefono:1, Direccion:1, ReferenciaFamiliar:1});
+        {_id: 0, CorreoElectronico:1, Telefono:1, Domicilio:1, ReferenciaFamiliar:1});
 };
 
 exports.actualizarEmpleadoCompleto = async (userId, updateOperations) => {

@@ -185,6 +185,18 @@ exports.actualizarTelefonosFamiliar = async (req, res) => {
     }
 };
 
+exports.obtnerCursoExternoEmpleado = async (req, res) => {
+    try{
+        const userId = req.user._id;
+
+        const cursosExternos = await cursoExternoService.obtnerCursoExternoEmpleado(userId);
+
+        res.status(200).json({ cursosExternos });        
+    }catch(error){
+        handleHttpError(res, 'Error al obtener los CursosExternos del Empleado', 500, error);
+    }
+};
+
 exports.agregarCursoExterno = async (req, res) => {
     try {
         const userId = req.user._id; // Obtener el _id del usuario autenticado

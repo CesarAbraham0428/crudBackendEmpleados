@@ -4,7 +4,7 @@ const referenciaFamiliarService = require('./referenciaFamiliarService');
 
 exports.obtenerTodos = async () => {
     try {
-        const empleados = await empleadoRepository.obtenerTodos();
+        const empleados = await empleadoRepository.obtenerEmpleados();
 
         if (!empleados) {
             throw new Error("No hay empleados registrados");
