@@ -1,11 +1,14 @@
 const Empleado = require('../models/empleado');
+
+const empleadoRepository = require('../repositories/empleadoRepository');
+
 const { sign } = require('../utils/handleJwt');
 const { hash, compare } = require('../utils/handlePassword');
 
 exports.registrarUsuario = async (userData) => {
     try {
-        const userExist = await Empleado.findOne({ RFC: { $eq: userData.RFC } });
-        const userEmailExist = await Empleado.findOne({ CorreoElectronico: { $eq: userData.CorreoElectronico } });
+        const userExist = await empleadoRepository.obtenerPorRFC(userData.RFC);
+        const userEmailExist = await empleadoRepository.obtenerPorEmail(userData.CorreoElectronico);
 
         if (userExist) {
             throw new Error('El usuario ya existe');
@@ -32,7 +35,7 @@ exports.registrarUsuario = async (userData) => {
 
 exports.loginUsuario = async (userData) => {
     try {
-        const usuario = await Empleado.findOne({ CorreoElectronico: { $eq: userData.CorreoElectronico } });
+        const usuario = await empleadoRepository.obtenerPorEmail(userData.CorreoElectronico);
 
         if (!usuario) {
             throw new Error('Usuario no encontrado');
@@ -51,45 +54,88 @@ exports.loginUsuario = async (userData) => {
 };
 
 const generarClaveEmpleado = async (Nombre, ApP, ApM) => {
-     console.log("Datos recibidos en generarClaveEmpleado:", { Nombre, ApP, ApM });
-    
-    // Validar que los parámetros no sean vacíos
-     if (!Nombre || !ApP || !ApM) {
-        throw new Error('Faltan datos para generar la clave de empleado');
+    console.log("Datos recibidos en generarClaveEmpleado:", { Nombre, ApP, ApM });
+
+    if (!Nombre || !ApP || !ApM) {
+        throw new Error("Faltan datos para generar la clave de empleado");
     }
 
     const nombres = Nombre.split(" ");
-    let iniciales = nombres.map(n => n.charAt(0)).join("").toUpperCase(); 
+    let iniciales = '';
+    if (nombres.length > 1) {
+      iniciales = nombres.map((n) => n.charAt(0)).join("").toUpperCase(); // Ejemplo: "José Antonio" -> "JA"
+    } else {
+      iniciales = nombres[0].substring(0, 2).toUpperCase(); // Ejemplo: "Camila" -> "CA"
+    }
     
-    // Primera letra del apellido paterno y materno
     const inicialApP = ApP.charAt(0).toUpperCase();
     const inicialApM = ApM.charAt(0).toUpperCase();
-
-    // Formar el prefijo de la clave
-    const prefijoClave = `${iniciales}${inicialApP}${inicialApM}`; 
-
-    // Buscar el último usuario con el mismo prefijo en MongoDB
-    const ultimoUsuario = await Empleado.aggregate([
-        { 
-            $match: { ClaveEmpleado: { $regex: `^${prefijoClave}-\\d{3}$` } } 
-        },
-        {
-            $sort: { ClaveEmpleado: -1 } 
-        },
-        {
-            $limit: 1 
+    
+    // Formar prefijo de la clave
+    const prefijoClave = `${iniciales}${inicialApP}${inicialApM}`;
+    
+    try {
+        // Buscar el último usuario con el mismo prefijo en MongoDB
+        const ultimoUsuario = await Empleado.aggregate([
+            {
+                $match: { ClaveEmpleado: { $regex: "^[A-Za-z]{3,4}-\\d{3}$" } }
+            },
+            {
+                $project: {
+                    ClaveEmpleado: 1,
+                    numero: {
+                        $toInt: {
+                            $substr: ["$ClaveEmpleado", 5, 3] 
+                        }
+                    }
+                }
+            },
+            { $sort: { ClaveEmpleado: -1 } },
+            { $limit: 1 }
+        ]);
+    
+        console.log("Último usuario encontrado:", ultimoUsuario); // Depuración
+    
+        let consecutivo = 1;
+        if (ultimoUsuario.length > 0) {
+            consecutivo = ultimoUsuario[0].numero + 1;  // Sumar 1 al último número encontrado
         }
-    ]);
-
-    let consecutivo = 1;
-    if (ultimoUsuario.length > 0) {
-        // Extraer el número del último empleado registrado
-        const claveSplit = ultimoUsuario[0].ClaveEmpleado.split('-');
-        consecutivo = parseInt(claveSplit[1]) + 1;
+    
+        // Formatear el consecutivo con 3 dígitos
+        const claveFinal = `${prefijoClave}-${consecutivo.toString().padStart(3, "0")}`;
+    
+        return claveFinal;
+    } catch (error) {
+        console.error("Error al generar la clave de empleado:", error);
+        throw new Error("Error al generar la clave de empleado");
     }
+};
 
-    // Formatear el consecutivo con 3 dígitos
-    const claveFinal = `${prefijoClave}-${consecutivo.toString().padStart(3, '0')}`;
 
-    return claveFinal;
+exports.cambiarPassword = async (userId, Password, NuevaPassword) => {
+    try {
+        // Obtener el usuario por su ID
+        const usuario = await empleadoRepository.obtenerPorId(userId);
+        if (!usuario) {
+            throw new Error("Usuario no encontrado");
+        }
+
+        // Verificar que la contraseña actual sea correcta
+        const passwordValida = await compare(Password, usuario.Password);
+        if (!passwordValida) {
+            throw new Error("Contraseña incorrecta");
+        }
+
+        // Encriptar la nueva contraseña
+        const nuevaPasswordEncriptada = await hash(NuevaPassword, 10);
+
+        // Actualizar la contraseña en la base de datos
+        await empleadoRepository.actualizarEmpleadoCompleto(userId, {
+            Password: nuevaPasswordEncriptada
+        });
+
+        return;
+    } catch (error) {
+        throw error;
+    }
 };

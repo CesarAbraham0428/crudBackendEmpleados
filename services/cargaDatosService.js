@@ -1,4 +1,4 @@
-const {Departamento,Ciudad,Puesto,Parentesco} = require('../models/cargaDatos');
+const {Departamento,Ciudad,Puesto,Parentesco,Actividad,Documento,Curso} = require('../models/cargaDatos');
 
 
 exports.getDepartamento = async () => {
@@ -49,6 +49,44 @@ exports.getParentesco = async () => {
         throw error; // En los Servicios solo lanzamos el error para que el controlador lo maneje
     }
 };
+
+
+exports.getActividad = async () => {
+    try {
+        const actividad = await Actividad.find()
+
+        return actividad;
+
+    } catch (error) {
+        throw error; // En los Servicios solo lanzamos el error para que el controlador lo maneje
+    }
+};
+
+
+exports.getTipoDocumento = async () => {
+    try {
+        const tipodocumento = await Documento.find()
+
+        return tipodocumento;
+
+    } catch (error) {
+        throw error; // En los Servicios solo lanzamos el error para que el controlador lo maneje
+    }
+};
+
+
+
+exports.getCurso = async () => {
+    try {
+        const nombrecurso = await Curso.find()
+
+        return nombrecurso;
+
+    } catch (error) {
+        throw error; // En los Servicios solo lanzamos el error para que el controlador lo maneje
+    }
+};
+
 
 
 

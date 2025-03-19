@@ -64,6 +64,29 @@ exports.eliminar = async (req, res) => {
     }
 };
 
+// Foto Empleado
+
+exports.agregarFotoEmpleado = async (req, res) => {
+    try {
+        const userId = req.user._id;
+        const foto = req.file;
+        const empleado = await empleadoService.agregarFotoEmpleado(userId, foto);
+        res.json({ message: "Foto subida correctamente.", empleado });
+    } catch (error) {
+        handleHttpError(res, 'Error al agregar la foto del empleado', 500, error);
+    }
+};
+
+exports.eliminarFotoEmpleado = async (req, res) => {
+    try {
+        const userId = req.user._id;
+        const empleado = await empleadoService.eliminarFotoEmpleado(userId);
+        res.json({ message: "Foto eliminada correctamente.", empleado });
+    } catch (error) {
+        handleHttpError(res, 'Error al eliminar la foto del empleado', 500, error);
+    }
+};
+
 // Correos y Telefonos del Empleado
 
 exports.actualizarContactos = async (req, res) => {
@@ -153,9 +176,9 @@ exports.actualizarTelefonosFamiliar = async (req, res) => {
             userId, referenciaId, operacion, telefonos
         );
 
-        res.status(200).json({ 
-            message: `Teléfonos de referencia familiar ${operacion === 'agregar' ? 'agregados' : 'eliminados'} correctamente`, 
-            referenciaActualizada 
+        res.status(200).json({
+            message: `Teléfonos de referencia familiar ${operacion === 'agregar' ? 'agregados' : 'eliminados'} correctamente`,
+            referenciaActualizada
         });
     } catch (error) {
         handleHttpError(res, `Error al ${req.body.operacion} teléfonos a referencia familiar`, 500, error);
@@ -226,3 +249,55 @@ exports.actualizarActividadEmpresa = async () => {
 exports.eliminarActividadEmpresa = async () => {
 
 };
+
+exports.obtenerEmpleadosFiltrados = async (req, res) => {
+    const { NombreActividad, NombreDepartamento } = req.query;
+
+    try {
+        const empleados = await empleadoService.obtenerEmpleadosFiltrados(NombreActividad, NombreDepartamento);
+
+        // Asigna la actividad a todos los empleados (incluso a los que no tienen actividad asignada)
+        const empleadosConActividad = empleados.map(emp => {
+            
+            // Si el empleado tiene la actividad, dejamos el Estatus tal cual
+            const actividadEncontrada = emp.ActividadEmpresa.find(act => act.NombreActividad === NombreActividad);
+
+            // Si no tiene la actividad, agregamos la actividad con Estatus 0 (no participa)
+            if (!actividadEncontrada) {
+                emp.ActividadEmpresa.push({
+                    NombreActividad: NombreActividad,
+                    Estatus: 0 
+                });
+            }
+
+            // Agrega el Estatus a cada empleado
+            emp.participacion = actividadEncontrada ? actividadEncontrada.Estatus : 0;
+
+            return emp;
+        });
+
+        res.json(empleadosConActividad);
+    } catch (error) {
+        res.status(500).json({ error: error.message });
+    }
+};
+
+
+exports.actualizarParticipacion = async (req, res) => {
+    console.log('Cuerpo de la solicitud:', req.body);  // Agrega esto para verificar los datos
+
+    const { ClaveEmpleado, NombreActividad, participacion } = req.body; 
+
+    const participacionValida = typeof participacion === 'boolean' ? (participacion ? 1 : 0) : participacion || 0;
+
+  
+    try {
+     
+      const empleado = await empleadoService.actualizarParticipacion(ClaveEmpleado, NombreActividad, participacionValida);
+  
+     
+      res.json({ message: 'Participación actualizada correctamente', empleado });
+    } catch (error) {
+      res.status(500).json({ error: error.message });
+    }
+  };

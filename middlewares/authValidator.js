@@ -42,6 +42,24 @@ const registroValidator = [
     body("Domicilio.CodigoPostal").exists().notEmpty().withMessage("Código postal requerido y debe ser válido"),
     body("Domicilio.Ciudad").exists().notEmpty().trim().withMessage("Ciudad requerida"),
 
+    // Validación para ReferenciaFamiliar
+    body("ReferenciaFamiliar")
+        .isArray({ min: 1 }).withMessage("Debe proporcionar al menos un familiar")
+        .custom((referencias) => {
+            if (!referencias.every(familiar => {
+                return (
+                    typeof familiar.NombreFamiliar === "string" && familiar.NombreFamiliar.trim() !== "" &&
+                    typeof familiar.Parentesco === "string" && familiar.Parentesco.trim() !== "" &&
+                    Array.isArray(familiar.Telefono) && familiar.Telefono.length > 0 &&
+                    familiar.Telefono.every(tel => typeof tel === "string" && tel.trim() !== "") &&
+                    typeof familiar.CorreoElectronico === "string" && /\S+@\S+\.\S+/.test(familiar.CorreoElectronico)
+                );
+            })) {
+                throw new Error("Los datos de los familiares no son válidos");
+            }
+            return true;
+        }),
+
     (req, res, next) => {
         const errors = validationResult(req);
         if (!errors.isEmpty()) {

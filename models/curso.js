@@ -34,6 +34,6 @@ const cursoSchema = new Schema (
     },
 );
 
-const Curso = mongoose.model("Curso", cursoSchema, "Curso");
+const Curso = mongoose.model("CursoInterno", cursoSchema, "CursoInterno");
 
 module.exports = Curso;

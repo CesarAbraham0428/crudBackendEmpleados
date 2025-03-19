@@ -40,3 +40,30 @@ exports.getParentesco = async (req, res) => {
 }
 
 
+exports.getActividad = async (req, res) => {
+    try {
+        const actividades = await cargarDatosService.getActividad();
+        res.status(200).json({actividades})
+    } catch (error) {
+        handleHttpError(res, 'No se encontraron parentescos registrados', 404, error)
+    }
+}
+
+
+exports.getTipoDocumento = async (req, res) => {
+    try {
+        const tipodocumento = await cargarDatosService.getTipoDocumento();
+        res.status(200).json({tipodocumento})
+    } catch (error) {
+        handleHttpError(res, 'No se encontraron tipos de documentos registrados', 404, error)
+    }
+}
+
+exports.getCurso = async (req, res) => {
+    try {
+        const nombrecurso = await cargarDatosService.getCurso();
+        res.status(200).json({nombrecurso})
+    } catch (error) {
+        handleHttpError(res, 'No se encontraron tipos de documentos registrados', 404, error)
+    }
+}

@@ -38,9 +38,41 @@ const parentescoSchema = new Schema({
 const Parentesco = mongoose.model("Parentesco", parentescoSchema, "Parentesco");
 
 
+
+const actividadSchema = new Schema({
+    NombreActividad: {
+        type: String,
+        required: true
+    }
+});
+const Actividad = mongoose.model("Actividad",actividadSchema, "Actividad");
+
+
+const tipoDocumentoSchema = new Schema({
+    TipoDocumento: {
+        type: String,
+        required: true
+    }
+});
+const Documento = mongoose.model("Documento",tipoDocumentoSchema, "Documento");
+
+
+const cursoSchema = new Schema({
+    NombreCurso: {
+        type: String,
+        required: true
+    }
+});
+const Curso = mongoose.model("Curso",tipoDocumentoSchema, "Curso");
+
+
+
 module.exports = {
     Departamento,
     Puesto,
     Ciudad,
-    Parentesco
+    Parentesco,
+    Actividad,
+    Documento,
+    Curso
 };

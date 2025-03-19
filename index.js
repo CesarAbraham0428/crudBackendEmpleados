@@ -10,6 +10,8 @@ const empleadoRoutes = require('./routes/empleadoRoutes');
 
 const cargaDatosRoutes = require ('./routes/cargaDatosRoutes');
 
+const cursoInternoRoutes = require('./routes/cursoInternoRoutes');
+
 const app = express();
 
 app.use(cors());
@@ -23,6 +25,9 @@ app.use('/auth', authRoutes);
 app.use('/empleado', empleadoRoutes);
 
 app.use('/datos', cargaDatosRoutes);
+
+app.use('/cursosI', cursoInternoRoutes );
+
 
 
 module.exports = app

@@ -5,9 +5,13 @@ const { registroValidator, loginValidator} = require('../middlewares/authValidat
 
 const authController = require('../controllers/authController');
 
+const autorizar = require('../middlewares/authMiddleware');
+
 router.post('/registrar', registroValidator ,authController.registrarUsuario);
 
 router.post('/login', loginValidator, authController.loginUsuario);
+
+router.patch('/actualizarPassword', autorizar, authController.cambiarPassword);
 
 router.get('/logout', authController.logoutUsuario);
 
