@@ -47,4 +47,8 @@ router.delete('/eliminarCursoExterno/:cursoExternoId', autorizar, empleadoContro
 
 router.get('/obtenerActividadesEmpleado', autorizar, empleadoController.obtenerActividadesEmpresa);
 
+router.get('/obtenerActividades', empleadoController.obtenerEmpleadosFiltrados);
+
+router.put('/actualizarParticipacion', empleadoController.actualizarParticipacion);
+
 module.exports = router;

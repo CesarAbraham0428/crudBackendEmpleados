@@ -261,3 +261,55 @@ exports.actualizarActividadEmpresa = async () => {
 exports.eliminarActividadEmpresa = async () => {
 
 };
+
+exports.obtenerEmpleadosFiltrados = async (req, res) => {
+    const { NombreActividad, NombreDepartamento } = req.query;
+
+    try {
+        const empleados = await empleadoService.obtenerEmpleadosFiltrados(NombreActividad, NombreDepartamento);
+
+        // Asigna la actividad a todos los empleados (incluso a los que no tienen actividad asignada)
+        const empleadosConActividad = empleados.map(emp => {
+            
+            // Si el empleado tiene la actividad, dejamos el Estatus tal cual
+            const actividadEncontrada = emp.ActividadEmpresa.find(act => act.NombreActividad === NombreActividad);
+
+            // Si no tiene la actividad, agregamos la actividad con Estatus 0 (no participa)
+            if (!actividadEncontrada) {
+                emp.ActividadEmpresa.push({
+                    NombreActividad: NombreActividad,
+                    Estatus: 0 
+                });
+            }
+
+            // Agrega el Estatus a cada empleado
+            emp.participacion = actividadEncontrada ? actividadEncontrada.Estatus : 0;
+
+            return emp;
+        });
+
+        res.json(empleadosConActividad);
+    } catch (error) {
+        res.status(500).json({ error: error.message });
+    }
+};
+
+
+exports.actualizarParticipacion = async (req, res) => {
+    console.log('Cuerpo de la solicitud:', req.body);  // Agrega esto para verificar los datos
+
+    const { ClaveEmpleado, NombreActividad, participacion } = req.body; 
+
+    const participacionValida = typeof participacion === 'boolean' ? (participacion ? 1 : 0) : participacion || 0;
+
+  
+    try {
+     
+      const empleado = await empleadoService.actualizarParticipacion(ClaveEmpleado, NombreActividad, participacionValida);
+  
+     
+      res.json({ message: 'Participación actualizada correctamente', empleado });
+    } catch (error) {
+      res.status(500).json({ error: error.message });
+    }
+  };
