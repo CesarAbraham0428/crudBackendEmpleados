@@ -317,7 +317,7 @@ exports.actualizarParticipacion = async (req, res) => {
 
   exports.actualizarEmpleadoT = async (req, res) => {
     try {
-        const ClaveEmpleado = req.params.ClaveEmpleado; // Extrae la ClaveEmpleado desde los parámetros de la URL
+        const ClaveEmpleado = String(req.params.ClaveEmpleado); // Extrae la ClaveEmpleado desde los parámetros de la URL
         const empleadoData = req.body;
 
         const empleadoActualizado = await empleadoService.actualizarEmpleado(ClaveEmpleado, empleadoData);

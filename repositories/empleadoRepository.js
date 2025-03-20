@@ -216,8 +216,8 @@ exports.obtenerActividadesEmpresa = async(userId)=>{
 //Actualiza RH mediante Clave 
 exports.actualizarEmpleadoCompletoT = async (ClaveEmpleado, updateOperations) => {
     return await Empleado.findOneAndUpdate(
-        { ClaveEmpleado: ClaveEmpleado }, 
+        { ClaveEmpleado: { $eq: ClaveEmpleado } },  // Usar $eq para comparar como string
         updateOperations,
-        { new: true, runValidators: true } 
+        { new: true, runValidators: true }
     );
 };
