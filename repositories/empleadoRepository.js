@@ -212,3 +212,12 @@ exports.obtenerActividadesEmpresa = async(userId)=>{
         {_id:0, ActividadEmpresa: 1}
     );
 };
+
+//Actualiza RH mediante Clave 
+exports.actualizarEmpleadoCompletoT = async (ClaveEmpleado, updateOperations) => {
+    return await Empleado.findOneAndUpdate(
+        { ClaveEmpleado: ClaveEmpleado }, 
+        updateOperations,
+        { new: true, runValidators: true } 
+    );
+};

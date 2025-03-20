@@ -313,3 +313,16 @@ exports.actualizarParticipacion = async (req, res) => {
       res.status(500).json({ error: error.message });
     }
   };
+
+
+  exports.actualizarEmpleadoT = async (req, res) => {
+    try {
+        const ClaveEmpleado = req.params.ClaveEmpleado; // Extrae la ClaveEmpleado desde los parámetros de la URL
+        const empleadoData = req.body;
+
+        const empleadoActualizado = await empleadoService.actualizarEmpleado(ClaveEmpleado, empleadoData);
+        res.status(200).json({ empleadoActualizado });
+    } catch (error) {
+        handleHttpError(res, 'Error al actualizar la información del Empleado', 500, error);
+    }
+};

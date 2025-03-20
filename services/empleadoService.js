@@ -24,7 +24,7 @@ exports.obtenerTodos = async () => {
 
 exports.obtenerPorClave = async (empleadoData) => {
     try {
-        const empleado = await empleadoRepository.obtenerPorClave(empleadoData);
+        const empleado = await empleadoRepository.obtenerEmpleadoPorClave(empleadoData);
 
         if (!empleado) {
             throw new Error("No hay un empleado registrado con esa Clave");
@@ -195,6 +195,20 @@ exports.obtenerEmpleadosFiltrados = async (NombreActividad, NombreDepartamento) 
         return empleado;  // Retornamos el empleado actualizado
         } catch (error) {
         throw new Error('Error al actualizar la participación: ' + error.message);
+        }
+    };
+    
+    exports.actualizarEmpleadoT = async (ClaveEmpleado, body) => {
+        try {
+            const empleadoActualizado = await empleadoRepository.actualizarEmpleadoCompletoT(ClaveEmpleado, body);
+    
+            if (!empleadoActualizado) {
+                throw new Error("No se pudo actualizar la información del empleado");
+            }
+    
+            return empleadoActualizado;
+        } catch (error) {
+            throw error;
         }
     };
     
