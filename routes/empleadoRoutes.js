@@ -51,4 +51,9 @@ router.get('/obtenerActividades', empleadoController.obtenerEmpleadosFiltrados);
 
 router.put('/actualizarParticipacion', empleadoController.actualizarParticipacion);
 
+router.get('/obtenerClave/:ClaveEmpleado', empleadoController.obtenerPorClave);
+
+router.patch('/actualizarEmpleadoT/:ClaveEmpleado', empleadoController.actualizarEmpleadoT);
+
+
 module.exports = router;

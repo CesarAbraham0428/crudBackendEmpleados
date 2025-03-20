@@ -21,6 +21,22 @@ exports.obtenerTodos = async () => {
     }
 };
 
+
+exports.obtenerPorClave = async (empleadoData) => {
+    try {
+        const empleado = await empleadoRepository.obtenerEmpleadoPorClave(empleadoData);
+
+        if (!empleado) {
+            throw new Error("No hay un empleado registrado con esa Clave");
+        }
+
+        return empleado;
+    } catch (error) {
+        throw error;
+    }
+};
+
+
 exports.obtenerInfoPersonal = async (userId) => {
     try {
 
@@ -224,5 +240,24 @@ exports.actualizarParticipacion = async (ClaveEmpleado, NombreActividad, partici
         return empleado;  // Retornamos el empleado actualizado
     } catch (error) {
         throw new Error('Error al actualizar la participación: ' + error.message);
+
+        }
+    };
+    
+    exports.actualizarEmpleadoT = async (ClaveEmpleado, body) => {
+        try {
+            const empleadoActualizado = await empleadoRepository.actualizarEmpleadoCompletoT(ClaveEmpleado, body);
+    
+            if (!empleadoActualizado) {
+                throw new Error("No se pudo actualizar la información del empleado");
+            }
+    
+            return empleadoActualizado;
+        } catch (error) {
+            throw error;
+        }
+    };
+    
     }
 };
+
