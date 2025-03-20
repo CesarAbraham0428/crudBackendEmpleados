@@ -1,5 +1,14 @@
 const empleadoRepository = require('../repositories/empleadoRepository');
 
+exports.obtnerCursoExternoEmpleado = async (userId)=>{
+    try{
+        const cursosExternos = await empleadoRepository.obtenerCursosExternos(userId);
+        return cursosExternos;
+    }catch(error){
+        throw error;
+    }
+};
+
 exports.agregar = async (userId, cursoExternoData) => {
     try {
         const empleadoActualizado = await empleadoRepository.agregarCursoExterno(userId, cursoExternoData);

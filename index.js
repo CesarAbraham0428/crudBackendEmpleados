@@ -14,7 +14,15 @@ const cursoInternoRoutes = require('./routes/cursoInternoRoutes');
 
 const app = express();
 
-app.use(cors());
+// Configura CORS para permitir el origen del frontend y credenciales
+app.use(
+    cors({
+      origin: 'http://localhost:4200', // Especifica el origen permitido
+      credentials: true, // Permite el envío de credenciales (cookies)
+    })
+  );
+  
+
 app.use(cookieParser());
 app.use(express.json());
 

@@ -38,6 +38,7 @@ router.patch('/actualizarTelefonosFamiliar/:referenciaId', autorizar, empleadoCo
 
 // Curso Externo
 
+router.get('/obtenerCursoExterno', autorizar, empleadoController.obtnerCursoExternoEmpleado);
 router.post('/agregarCursoExterno', autorizar, empleadoController.agregarCursoExterno);
 router.patch('/actualizarCursoExterno/:cursoExternoId', autorizar, empleadoController.actualizarCursoExterno);
 router.delete('/eliminarCursoExterno/:cursoExternoId', autorizar, empleadoController.eliminarCursoExterno);

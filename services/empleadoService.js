@@ -8,7 +8,6 @@ const Empleado = require('../models/empleado');
 
 exports.obtenerTodos = async () => {
     try {
-        console.log(empleadoRepository);
 
         const empleados = await empleadoRepository.obtenerEmpleados();
 
