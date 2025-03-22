@@ -183,7 +183,6 @@ exports.manejarTelefonos = async (userId, operacion, datos) => {
     }
 };
 
-
 exports.obtenerEmpleadosFiltrados = async (NombreActividad, NombreDepartamento) => {
     try {
       const empleados = await Empleado.find({
