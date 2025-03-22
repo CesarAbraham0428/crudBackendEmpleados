@@ -7,6 +7,7 @@ const registroValidator = [
     body("ApP").exists().notEmpty().trim().withMessage("Apellido paterno requerido"),
     body("ApM").optional(),
     body("FechaNacimiento").exists().notEmpty().withMessage("Fecha de nacimiento requerida"),
+    body("FotoEmpleado").optional(),
 
     // Validación para que sea un array con elementos tipo string (teléfonos)
     body("Telefono")

@@ -59,6 +59,25 @@ exports.actualizarFotoEmpleado = async (userId, fotoBuffer) => {
     );
   };
 
+//   exports.obtenerFoto = async (userId) => {
+//     try {
+//       const empleado = await Empleado.findOne(
+//         { _id: userId },
+//         { _id: 0, FotoEmpleado: 1 } 
+//       );
+  
+//       if (!empleado || !empleado.FotoEmpleado) {e
+//         return null; 
+//       }
+  
+//       return empleado.FotoEmpleado; 
+//     } catch (error) {
+//       console.error('Error al obtener la foto:', error);
+//       throw error; 
+//     }
+//   };
+
+
 // Telefono
 
 exports.agregarTelefono = async (userId, telefono) => {
@@ -216,7 +235,7 @@ exports.obtenerActividadesEmpresa = async(userId)=>{
 //Actualiza RH mediante Clave 
 exports.actualizarEmpleadoCompletoT = async (ClaveEmpleado, updateOperations) => {
     return await Empleado.findOneAndUpdate(
-        { ClaveEmpleado: { $eq: ClaveEmpleado } },  // Usar $eq para comparar como string
+        { ClaveEmpleado: { $eq: ClaveEmpleado } }, 
         updateOperations,
         { new: true, runValidators: true }
     );

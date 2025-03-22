@@ -23,7 +23,7 @@ exports.loginUsuario = async (req, res) => {
             maxAge: 60 * 60 * 1000 // 1 hora
         });
 
-        res.status(200).json({ message: 'Inicio de sesión exitoso', usuario});
+        res.status(200).json({ message: 'Inicio de sesión exitoso', usuario,token});
     } catch (error) {
         handleHttpError(res, 'Error al iniciar sesión', 500, error);
     }

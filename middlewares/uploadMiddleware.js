@@ -2,7 +2,7 @@ const multer = require("multer");
 
 // Validaciones
 const ALLOWED_TYPES = ["image/jpeg", "image/png", "image/jpg"];
-const MAX_SIZE = 2 * 1024 * 1024; // 2MB
+const MAX_SIZE = 5 * 1024 * 1024; // 5MB
 
 // Configuración de almacenamiento en memoria para almacenar como Buffer
 const storage = multer.memoryStorage();
