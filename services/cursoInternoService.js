@@ -53,6 +53,10 @@ exports.obtenerCursosConEmpleados = async (filtros = {}) => {
     if (fechaInicio && fechaTermino) {
       matchFilters.FechaInicio = { $gte: new Date(fechaInicio) }; // FechaInicio mayor o igual a la fecha de inicio
       matchFilters.FechaFin = { $lte: new Date(fechaTermino) }; // FechaFin menor o igual a la fecha de término
+    }else if (fechaInicio) {
+      matchFilters.FechaInicio = { $gte: new Date(fechaInicio) };
+    } else if (fechaTermino) {
+      matchFilters.FechaFin = { $lte: new Date(fechaTermino) };
     }
 
     // Si hay filtros, agregarlos al pipeline
