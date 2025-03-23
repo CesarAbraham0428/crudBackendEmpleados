@@ -20,11 +20,31 @@ exports.registrarUsuario = async (userData) => {
         if (!claveEmpleado) {
             throw new Error('No se pudo generar la clave de empleado');
         }
+
+        const { FotoEmpleado, ...restoDeDatos } = userData;
+        console.log(FotoEmpleado);
+
+        // Convertir FotoEmpleado a Buffer si es válido
+        let fotoBuffer = null;
+        if (FotoEmpleado && typeof FotoEmpleado === "string" && FotoEmpleado.startsWith("data:")) {
+            const base64Data = FotoEmpleado.split(",")[1];
+            if (base64Data) {
+                fotoBuffer = Buffer.from(base64Data, "base64");
+                console.log("fotoBuffer:", fotoBuffer);
+            } else {
+                console.error("La cadena base64 no es válida.");
+            }
+        } else {
+            console.error("FotoEmpleado no es válida:", FotoEmpleado);
+        }
+
+
         const hashedPassword = await hash(userData.Password);
         const nuevoUsuario = new Empleado({
-            ...userData,
+            ...restoDeDatos,
             ClaveEmpleado:claveEmpleado,
-            Password: hashedPassword
+            Password: hashedPassword,
+            FotoEmpleado: fotoBuffer
         });
 
         return await nuevoUsuario.save();

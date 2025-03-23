@@ -7,7 +7,9 @@ const authController = require('../controllers/authController');
 
 const autorizar = require('../middlewares/authMiddleware');
 
-router.post('/registrar', registroValidator ,authController.registrarUsuario);
+const upload = require("../middlewares/uploadMiddleware");
+
+router.post('/registrar', registroValidator,authController.registrarUsuario);
 
 router.post('/login', loginValidator, authController.loginUsuario);
 
