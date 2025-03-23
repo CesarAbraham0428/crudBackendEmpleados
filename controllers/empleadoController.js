@@ -66,12 +66,33 @@ exports.eliminar = async (req, res) => {
 
 // Foto Empleado
 
+exports.obtenerFotoEmpleado = async (req, res) => {
+    try {
+        const userId = req.user._id;
+        const fotoBuffer = await empleadoService.obtenerFotoEmpleado(userId);
+
+        if (!fotoBuffer) return res.json({ foto: null });
+
+        // Convertir Buffer a Base64
+        const fotoBase64 = fotoBuffer.toString('base64');
+        res.json({ foto: fotoBase64 });
+    } catch (error) {
+        handleHttpError(res, 'Error al obtener la foto del empleado', 500, error);
+    }
+};
+
 exports.agregarFotoEmpleado = async (req, res) => {
     try {
         const userId = req.user._id;
         const foto = req.file;
         const empleado = await empleadoService.agregarFotoEmpleado(userId, foto);
-        res.json({ message: "Foto subida correctamente.", empleado });
+
+        // Convertir Buffer a Base64 antes de enviar
+        const fotoBase64 = empleado.FotoEmpleado.toString('base64');
+        res.json({
+            message: "Foto subida correctamente.",
+            foto: fotoBase64
+        });
     } catch (error) {
         handleHttpError(res, 'Error al agregar la foto del empleado', 500, error);
     }
@@ -186,13 +207,13 @@ exports.actualizarTelefonosFamiliar = async (req, res) => {
 };
 
 exports.obtnerCursoExternoEmpleado = async (req, res) => {
-    try{
+    try {
         const userId = req.user._id;
 
         const cursosExternos = await cursoExternoService.obtnerCursoExternoEmpleado(userId);
 
-        res.status(200).json({ cursosExternos });        
-    }catch(error){
+        res.status(200).json({ cursosExternos });
+    } catch (error) {
         handleHttpError(res, 'Error al obtener los CursosExternos del Empleado', 500, error);
     }
 };
@@ -270,7 +291,7 @@ exports.obtenerEmpleadosFiltrados = async (req, res) => {
 
         // Asigna la actividad a todos los empleados (incluso a los que no tienen actividad asignada)
         const empleadosConActividad = empleados.map(emp => {
-            
+
             // Si el empleado tiene la actividad, dejamos el Estatus tal cual
             const actividadEncontrada = emp.ActividadEmpresa.find(act => act.NombreActividad === NombreActividad);
 
@@ -278,7 +299,7 @@ exports.obtenerEmpleadosFiltrados = async (req, res) => {
             if (!actividadEncontrada) {
                 emp.ActividadEmpresa.push({
                     NombreActividad: NombreActividad,
-                    Estatus: 0 
+                    Estatus: 0
                 });
             }
 
@@ -298,24 +319,24 @@ exports.obtenerEmpleadosFiltrados = async (req, res) => {
 exports.actualizarParticipacion = async (req, res) => {
     console.log('Cuerpo de la solicitud:', req.body);  // Agrega esto para verificar los datos
 
-    const { ClaveEmpleado, NombreActividad, participacion } = req.body; 
+    const { ClaveEmpleado, NombreActividad, participacion } = req.body;
 
     const participacionValida = typeof participacion === 'boolean' ? (participacion ? 1 : 0) : participacion || 0;
 
-  
+
     try {
-     
-      const empleado = await empleadoService.actualizarParticipacion(ClaveEmpleado, NombreActividad, participacionValida);
-  
-     
-      res.json({ message: 'Participación actualizada correctamente', empleado });
+
+        const empleado = await empleadoService.actualizarParticipacion(ClaveEmpleado, NombreActividad, participacionValida);
+
+
+        res.json({ message: 'Participación actualizada correctamente', empleado });
     } catch (error) {
-      res.status(500).json({ error: error.message });
+        res.status(500).json({ error: error.message });
     }
-  };
+};
 
 
-  exports.actualizarEmpleadoT = async (req, res) => {
+exports.actualizarEmpleadoT = async (req, res) => {
     try {
         const ClaveEmpleado = String(req.params.ClaveEmpleado); // Extrae la ClaveEmpleado desde los parámetros de la URL
         const empleadoData = req.body;

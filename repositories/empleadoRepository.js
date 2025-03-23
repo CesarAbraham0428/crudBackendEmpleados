@@ -1,10 +1,10 @@
 const Empleado = require('../models/empleado');
 
-exports.obtenerEmpleados = async()=>{
-    return await Empleado.find({Rol:{$eq: "Empleado"}});
+exports.obtenerEmpleados = async () => {
+    return await Empleado.find({ Rol: { $eq: "Empleado" } });
 };
 
-exports.obtenerEmpleadoPorClave = async(empleadoData)=>{
+exports.obtenerEmpleadoPorClave = async (empleadoData) => {
     return await Empleado.findOne({ ClaveEmpleado: empleadoData.ClaveEmpleado });
 
 };
@@ -21,10 +21,10 @@ exports.obtenerPorEmail = async (userData) => {
     return await Empleado.findOne({ CorreoElectronico: { $eq: userData } });
 };
 
-exports.obtenerInfoPersonal = async(userId)=>{
+exports.obtenerInfoPersonal = async (userId) => {
     return await Empleado.find(
-        {_id:{$eq: userId}},
-        {_id: 0, CorreoElectronico:1, Telefono:1, Domicilio:1, ReferenciaFamiliar:1});
+        { _id: { $eq: userId } },
+        { _id: 0, CorreoElectronico: 1, Telefono: 1, Domicilio: 1, ReferenciaFamiliar: 1 });
 };
 
 exports.actualizarEmpleadoCompleto = async (userId, updateOperations) => {
@@ -41,42 +41,33 @@ exports.eliminarPorClave = async (empleadoData) => {
 
 // Foto del empleado
 
+exports.obtenerFotoEmpleado = async (userId) => {
+    const empleado = await Empleado.findOne(
+        { _id: userId },
+        { _id: 0, FotoEmpleado: 1 }
+    );
+    if (!empleado || !empleado.FotoEmpleado) {
+        return null;
+    }
+    return empleado.FotoEmpleado;
+};
+
 exports.actualizarFotoEmpleado = async (userId, fotoBuffer) => {
     return await Empleado.findByIdAndUpdate(
-      userId,
-      { FotoEmpleado: fotoBuffer },
-      { new: true, runValidators: true }
+        userId,
+        { FotoEmpleado: fotoBuffer },
+        { new: true, runValidators: true }
     );
-  };
-  
-  // Eliminar foto de perfil
-  exports.eliminarFotoEmpleado = async (userId) => {
-    const defaultPhoto = null; // Puedes definir una foto por defecto en Buffer si lo deseas
+};
+
+exports.eliminarFotoEmpleado = async (userId) => {
+    const defaultPhoto = null;
     return await Empleado.findByIdAndUpdate(
-      userId,
-      { FotoEmpleado: defaultPhoto },
-      { new: true }
+        userId,
+        { FotoEmpleado: defaultPhoto },
+        { new: true }
     );
-  };
-
-//   exports.obtenerFoto = async (userId) => {
-//     try {
-//       const empleado = await Empleado.findOne(
-//         { _id: userId },
-//         { _id: 0, FotoEmpleado: 1 } 
-//       );
-  
-//       if (!empleado || !empleado.FotoEmpleado) {e
-//         return null; 
-//       }
-  
-//       return empleado.FotoEmpleado; 
-//     } catch (error) {
-//       console.error('Error al obtener la foto:', error);
-//       throw error; 
-//     }
-//   };
-
+};
 
 // Telefono
 
@@ -136,9 +127,9 @@ exports.actualizarReferenciaFamiliar = async (userId, referenciaId, referenciaDa
     });
 
     return await Empleado.findOneAndUpdate(
-        { 
+        {
             _id: userId,
-            'ReferenciaFamiliar._id': referenciaId 
+            'ReferenciaFamiliar._id': referenciaId
         },
         { $set: updateQuery },
         { new: true, runValidators: true }
@@ -158,9 +149,9 @@ exports.eliminarReferenciaFamiliar = async (userId, referenciaId) => {
 exports.agregarTelefonoReferenciaFamiliar = async (userId, referenciaId, telefonos) => {
     // Utilizar $addToSet con $each para agregar múltiples teléfonos sin duplicados
     return await Empleado.findOneAndUpdate(
-        { 
+        {
             _id: userId,
-            'ReferenciaFamiliar._id': referenciaId 
+            'ReferenciaFamiliar._id': referenciaId
         },
         { $addToSet: { 'ReferenciaFamiliar.$.Telefono': { $each: telefonos } } },
         { new: true, runValidators: true }
@@ -170,9 +161,9 @@ exports.agregarTelefonoReferenciaFamiliar = async (userId, referenciaId, telefon
 exports.eliminarTelefonoReferenciaFamiliar = async (userId, referenciaId, telefonos) => {
     // Utilizamos $pullAll para eliminar múltiples teléfonos de una vez
     return await Empleado.findOneAndUpdate(
-        { 
+        {
             _id: userId,
-            'ReferenciaFamiliar._id': referenciaId 
+            'ReferenciaFamiliar._id': referenciaId
         },
         { $pullAll: { 'ReferenciaFamiliar.$.Telefono': telefonos } },
         { new: true, runValidators: true }
@@ -181,10 +172,10 @@ exports.eliminarTelefonoReferenciaFamiliar = async (userId, referenciaId, telefo
 
 //Cusos Externos
 
-exports.obtenerCursosExternos = async(userId)=>{
+exports.obtenerCursosExternos = async (userId) => {
     return await Empleado.find(
-        {_id: {$eq: userId}},
-        {_id:0, CursoExterno: 1}
+        { _id: { $eq: userId } },
+        { _id: 0, CursoExterno: 1 }
     );
 };
 
@@ -206,9 +197,9 @@ exports.actualizarCursoExterno = async (userId, cursoExternoId, cursoExternoData
     });
 
     return await Empleado.findOneAndUpdate(
-        { 
+        {
             _id: userId,
-            'CursoExterno._id': cursoExternoId 
+            'CursoExterno._id': cursoExternoId
         },
         { $set: updateQuery },
         { new: true, runValidators: true }
@@ -218,24 +209,24 @@ exports.actualizarCursoExterno = async (userId, cursoExternoId, cursoExternoData
 exports.eliminarCursoExterno = async (userId, cursoExternoId) => {
     return await Empleado.findByIdAndUpdate(
         userId,
-        { $pull: { CursoExterno: { _id: cursoExternoId } }}, // Eliminar del array CursoExterno
+        { $pull: { CursoExterno: { _id: cursoExternoId } } }, // Eliminar del array CursoExterno
         { new: true }
     );
 };
 
 //Actividades
 
-exports.obtenerActividadesEmpresa = async(userId)=>{
+exports.obtenerActividadesEmpresa = async (userId) => {
     return await Empleado.find(
-        {_id: {$eq: userId}},
-        {_id:0, ActividadEmpresa: 1}
+        { _id: { $eq: userId } },
+        { _id: 0, ActividadEmpresa: 1 }
     );
 };
 
 //Actualiza RH mediante Clave 
 exports.actualizarEmpleadoCompletoT = async (ClaveEmpleado, updateOperations) => {
     return await Empleado.findOneAndUpdate(
-        { ClaveEmpleado: { $eq: ClaveEmpleado } }, 
+        { ClaveEmpleado: { $eq: ClaveEmpleado } },
         updateOperations,
         { new: true, runValidators: true }
     );

@@ -21,6 +21,7 @@ router.patch('/actualizarEmpleado', autorizar ,actualizarEmpleadoValidator, empl
 router.delete('/eliminarEmpleado/:ClaveEmpleado', empleadoController.eliminar);
 
 // Rutas para la foto del empleado
+router.get('/obtenerFoto', autorizar, empleadoController.obtenerFotoEmpleado);
 router.post("/agregarFoto", autorizar, upload.single("foto"), empleadoController.agregarFotoEmpleado);
 router.delete("/eliminarFoto", autorizar, empleadoController.eliminarFotoEmpleado);
 // Arrays Correo y Telefono
