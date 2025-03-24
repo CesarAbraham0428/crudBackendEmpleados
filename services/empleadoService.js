@@ -78,6 +78,10 @@ exports.eliminar = async (empleadoData) => {
 
 // Foto Empleado
 
+exports.obtenerFotoEmpleado = async (userId) => {
+    return await empleadoRepository.obtenerFotoEmpleado(userId);
+};
+
 exports.agregarFotoEmpleado = async (userId, foto) => {
     if (!foto) throw new Error("No se recibió ninguna imagen.");
     return await empleadoRepository.actualizarFotoEmpleado(userId, foto.buffer);
