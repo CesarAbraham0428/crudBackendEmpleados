@@ -2,7 +2,7 @@ const Empleado = require('../models/empleado');
 
 
 exports.obtenerEmpleados = async () => {
-    return await Empleado.find({ Rol: { $eq: "Empleado" } });
+    return await Empleado.find({ Rol: {$in:[ "Empleado","RH"]}});
 };
 
 exports.obtenerEmpleadoPorClave = async (empleadoData) => {
